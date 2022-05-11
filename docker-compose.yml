@@ -7,8 +7,6 @@ services:
             - "80:80"
         volumes:
             - .:/var/www/html
-        networks:
-            - network
         command: ["./wait-for-it.sh", "database:3306", "--", "python", "app.py"]
     database:
         image: mariadb:10.3.32
@@ -19,9 +17,7 @@ services:
             MYSQL_ROOT_PASSWORD: root
         ports:
             - "3306:3306"
-        networks:
-            - network
 
 networks:
-    network:
-        external: true
+    default:
+        driver: bridge
