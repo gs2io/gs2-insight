@@ -2,10 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Domain\Aggregate\Metrics\Experience\GrnKey;
-use App\Domain\Aggregate\Metrics\Lottery\Index;
-use App\Domain\Aggregate\Players;
-use App\Domain\Aggregate\Timelines;
 use App\Domain\GcpDomain;
 use DateInterval;
 use DatePeriod;
@@ -81,12 +77,19 @@ class PopulateCommand extends Command
 //            ))->load();
 //            $totalBytesProcessed += $result->totalBytesProcessed;
 
-            $result = (new GrnKey(
+            $result = (new \App\Domain\Aggregate\Metrics\Gateway\Index(
                 new DatePeriod($startDate, $interval, $endDate),
                 $datasetName,
                 $credentials,
-            ))->load("8a5f966c-bd4f-4848-a036-8a3305ccd898");
+            ))->load();
             $totalBytesProcessed += $result->totalBytesProcessed;
+
+//            $result = (new GrnKey(
+//                new DatePeriod($startDate, $interval, $endDate),
+//                $datasetName,
+//                $credentials,
+//            ))->load("8a5f966c-bd4f-4848-a036-8a3305ccd898");
+//            $totalBytesProcessed += $result->totalBytesProcessed;
 
             $elapsed = microtime(true) - $begin;
             printf("Processing time:  %.3f sec\n", $elapsed);

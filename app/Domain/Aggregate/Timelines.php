@@ -164,7 +164,7 @@ class Timelines extends AbstractAggregate
         $totalBytesProcessed += $items->info()['totalBytesProcessed'];
 
         foreach ($items as $item) {
-            if (isset($item["transactionId"])) {
+            if (isset($item["transactionId"]) && isset($item["service"])) {
                 ExecuteStampTaskLog::query()->firstOrCreate(
                     ["taskId" => $item["taskId"]],
                     [
@@ -226,22 +226,24 @@ class Timelines extends AbstractAggregate
         $totalBytesProcessed += $items->info()['totalBytesProcessed'];
 
         foreach ($items as $item) {
-            $result = json_decode($item["result"], true);
-            if (in_array('result', array_keys($result))) {
-                $item["result"] = $result['result'];
+            if (isset($item["service"])) {
+                $result = json_decode($item["result"], true);
+                if (in_array('result', array_keys($result))) {
+                    $item["result"] = $result['result'];
+                }
+                ExecuteStampSheetLog::query()->firstOrCreate(
+                    ["transactionId" => $item["transactionId"]],
+                    [
+                        "userId" => array_key_exists('userId', $item) ? $item['userId'] : json_decode($item["args"], true)['userId'],
+                        "service" => $item["service"],
+                        "method" => $item["method"],
+                        "action" => $item["action"],
+                        "args" => $item["args"],
+                        "result" => $item["result"],
+                        "timestamp" => Carbon::createFromInterface($item["timestamp"]->get()),
+                    ],
+                );
             }
-            ExecuteStampSheetLog::query()->firstOrCreate(
-                ["transactionId" => $item["transactionId"]],
-                [
-                    "userId" => array_key_exists('userId', $item) ? $item['userId'] : json_decode($item["args"], true)['userId'],
-                    "service" => $item["service"],
-                    "method" => $item["method"],
-                    "action" => $item["action"],
-                    "args" => $item["args"],
-                    "result" => $item["result"],
-                    "timestamp" => Carbon::createFromInterface($item["timestamp"]->get()),
-                ],
-            );
         }
 
         return new LoadResult(

@@ -392,6 +392,11 @@ return [
     "model.account.takeOver.action.accept" => "Accept",
     "model.account.takeOver.action.detail" => "Detail",
 
+    "model.gateway" => "Connection",
+    "model.gateway.namespace.action.detail" => "Detail",
+    "model.gateway.webSocketSession.action.disconnect" => "Disconnect",
+    "model.gateway.webSocketSession.action.accept" => "Accept",
+
     "model.realtime" => "Realtime",
     "model.realtime.namespace.name" => "Namespace Name",
     "model.realtime.namespace.action.search" => "Search",

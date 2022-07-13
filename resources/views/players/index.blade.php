@@ -184,6 +184,15 @@
                         {{ __('messages.model.jobQueue') }}
                     </a>
                 @endif
+                @if(isset(request()->mode) && request()->mode == 'gateway')
+                    <button class="text-gray-600 py-4 px-6 block hover:text-blue-500 focus:outline-none text-blue-500 border-b-2 font-medium border-blue-500">
+                        {{ __('messages.model.gateway') }}
+                    </button>
+                @else
+                    <a href="{{ url()->current(). '?mode=gateway' }}" class="text-gray-600 py-4 px-6 block hover:text-blue-500 focus:outline-none">
+                        {{ __('messages.model.gateway') }}
+                    </a>
+                @endif
             </nav>
             <div class="pt-4">
                 @if(!isset(request()->mode) || request()->mode == 'timeline')
@@ -228,6 +237,8 @@
                     {{ $player->limit()->namespacesView('limit/components/namespace/flat_list') }}
                 @elseif(isset(request()->mode) && request()->mode == 'jobQueue')
                     {{ $player->jobQueue()->namespacesView('jobQueue/components/namespace/flat_list') }}
+                @elseif(isset(request()->mode) && request()->mode == 'gateway')
+                    {{ $player->gateway()->namespacesView('gateway/components/namespace/flat_list') }}
                 @endif
             </div>
         </div>

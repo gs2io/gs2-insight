@@ -12,7 +12,7 @@
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "google/cloud-bigquery": "^v1.23.1",
-        "gs2/gs2-php-sdk": "^1.4.5"
+        "gs2/gs2-php-sdk": "^1.4.78"
     },
     "require-dev": {
         "facade/ignition": "^2.5",

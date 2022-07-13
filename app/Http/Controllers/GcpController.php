@@ -170,6 +170,15 @@ class GcpController extends Controller
                     $gcp->credentials,
                 );
                 $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
+                $nextStatus = LoadTarget::Gateway;
+                break;
+            case LoadTarget::Gateway;
+                $timelines = new \App\Domain\Aggregate\Metrics\Gateway\Index(
+                    $period,
+                    $gcp->datasetName,
+                    $gcp->credentials,
+                );
+                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
                 $nextStatus = LoadTarget::Inbox;
                 break;
             case LoadTarget::Inbox;
@@ -414,6 +423,15 @@ class GcpController extends Controller
                 break;
             case LoadTarget::Friend;
                 $timelines = new \App\Domain\Aggregate\Metrics\Friend\GrnKey(
+                    $period,
+                    $gcp->datasetName,
+                    $gcp->credentials,
+                );
+                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
+                $nextStatus = LoadTarget::Gateway;
+                break;
+            case LoadTarget::Gateway;
+                $timelines = new \App\Domain\Aggregate\Metrics\Gateway\GrnKey(
                     $period,
                     $gcp->datasetName,
                     $gcp->credentials,

@@ -384,6 +384,11 @@ return [
     "model.account.takeOver.action.accept" => "確定",
     "model.account.takeOver.action.detail" => "詳細",
 
+    "model.gateway" => "接続",
+    "model.gateway.namespace.action.detail" => "詳細",
+    "model.gateway.webSocketSession.action.disconnect" => "切断",
+    "model.gateway.webSocketSession.action.accept" => "確定",
+
     "model.realtime" => "Realtime",
     "model.realtime.namespace.name" => "ネームスペース名",
     "model.realtime.namespace.action.search" => "検索",

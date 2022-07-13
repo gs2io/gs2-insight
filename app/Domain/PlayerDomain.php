@@ -20,6 +20,7 @@ use App\Domain\Gs2Ranking\ServiceDomain as RankingServiceDomain;
 use App\Domain\Gs2JobQueue\ServiceDomain as JobQueueServiceDomain;
 use App\Domain\Gs2Limit\ServiceDomain as LimitServiceDomain;
 use App\Domain\Gs2Lottery\ServiceDomain as LotteryServiceDomain;
+use App\Domain\Gs2Gateway\ServiceDomain as GatewayServiceDomain;
 use App\Models\Gcp;
 use App\Models\Player;
 use Illuminate\Database\Eloquent\Builder;
@@ -139,6 +140,11 @@ class PlayerDomain extends BaseDomain {
     public function lottery(
     ): LotteryServiceDomain {
         return new LotteryServiceDomain();
+    }
+
+    public function gateway(
+    ): GatewayServiceDomain {
+        return new GatewayServiceDomain();
     }
 
     #[Pure] public function timeline(

@@ -16,6 +16,7 @@ enum LoadTarget {
     case Exchange;
     case Experience;
     case Friend;
+    case Gateway;
     case Inbox;
     case Inventory;
     case JobQueue;
@@ -48,6 +49,7 @@ enum LoadTarget {
             "Exchange" => self::Exchange,
             "Experience" => self::Experience,
             "Friend" => self::Friend,
+            "Gateway" => self::Gateway,
             "Inbox" => self::Inbox,
             "Inventory" => self::Inventory,
             "JobQueue" => self::JobQueue,
@@ -85,6 +87,7 @@ enum LoadTarget {
             self::Exchange => "Exchange",
             self::Experience => "Experience",
             self::Friend => "Friend",
+            self::Gateway => "Gateway",
             self::Inbox => "Inbox",
             self::Inventory => "Inventory",
             self::JobQueue => "JobQueue",

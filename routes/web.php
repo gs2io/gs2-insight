@@ -136,6 +136,8 @@ Route::post('/players/{userId}/friend/{namespaceName}/friend/request/{targetUser
 Route::post('/players/{userId}/friend/{namespaceName}/friend/request/{targetUserId}/reject','App\Http\Controllers\FriendController@reject');
 Route::post('/players/{userId}/friend/{namespaceName}/friend/request/{targetUserId}/delete','App\Http\Controllers\FriendController@deleteRequest');
 
+Route::post('/players/{userId}/gateway/{namespaceName}/webSocketSession/disconnect','App\Http\Controllers\GatewayController@disconnect');
+
 
 Route::get('/metrics','App\Http\Controllers\MetricsController@index');
 Route::get('/metrics/account/{namespaceName}','App\Http\Controllers\Metrics\Account\NamespaceController@index');
