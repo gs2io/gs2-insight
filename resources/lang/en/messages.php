@@ -209,6 +209,9 @@ return [
     "model.friend.friend.action.accept" => "Accept",
     "model.friend.friend.action.detail" => "Detail",
     "model.friend.profile" => "Profile",
+    "model.friend.profile.publicProfile" => "Public Profile",
+    "model.friend.profile.followerProfile" => "Profile for Follower",
+    "model.friend.profile.friendProfile" => "Profile for Friend",
     "model.friend.sendRequest" => "Send Friend Requests",
     "model.friend.sendRequest.userId" => "Target User ID",
     "model.friend.sendRequest.targetUserId" => "Target User ID",
@@ -220,6 +223,7 @@ return [
     "model.friend.receiveRequest.fromUserId" => "From User ID",
     "model.friend.receiveRequest.action.accept" => "Accept",
     "model.friend.receiveRequest.action.reject" => "Reject",
+    "model.friend.profile.action.update" => "Update",
 
     "model.ranking" => "Ranking",
     "model.ranking.namespace.name" => "Namespace Name",

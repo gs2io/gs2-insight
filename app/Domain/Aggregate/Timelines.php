@@ -164,19 +164,21 @@ class Timelines extends AbstractAggregate
         $totalBytesProcessed += $items->info()['totalBytesProcessed'];
 
         foreach ($items as $item) {
-            ExecuteStampTaskLog::query()->firstOrCreate(
-                ["taskId" => $item["taskId"]],
-                [
-                    "userId" => array_key_exists('userId', $item) ? $item['userId'] : json_decode($item["args"], true)['userId'],
-                    "transactionId" => $item["transactionId"],
-                    "service" => $item["service"],
-                    "method" => $item["method"],
-                    "action" => $item["action"],
-                    "args" => $item["args"],
-                    "result" => $item["result"],
-                    "timestamp" => Carbon::createFromInterface($item["timestamp"]->get()),
-                ],
-            );
+            if (isset($item["transactionId"])) {
+                ExecuteStampTaskLog::query()->firstOrCreate(
+                    ["taskId" => $item["taskId"]],
+                    [
+                        "userId" => array_key_exists('userId', $item) ? $item['userId'] : json_decode($item["args"], true)['userId'],
+                        "transactionId" => $item["transactionId"],
+                        "service" => $item["service"],
+                        "method" => $item["method"],
+                        "action" => $item["action"],
+                        "args" => $item["args"],
+                        "result" => $item["result"],
+                        "timestamp" => Carbon::createFromInterface($item["timestamp"]->get()),
+                    ],
+                );
+            }
         }
 
         $query = $bigQuery->query("

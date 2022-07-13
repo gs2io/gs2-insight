@@ -1,4 +1,3 @@
-@if(isset($profile->profile))
 <div class="flex flex-col">
     <div class="-my-2 overflow-x-auto">
         <div class="py-2 align-middle inline-block min-w-full">
@@ -8,7 +7,9 @@
                         {{ __('messages.model.friend.profile.publicProfile') }}
                     </th>
                     <td class="px-6 py-4 whitespace-nowrap">
+                        @if(isset($profile->profile))
                         {{ $profile->profile->getPublicProfile() }}
+                        @endif
                     </td>
                 </tr>
                 <tr>
@@ -16,7 +17,9 @@
                         {{ __('messages.model.friend.profile.friendProfile') }}
                     </th>
                     <td class="px-6 py-4 whitespace-nowrap">
+                        @if(isset($profile->profile))
                         {{ $profile->profile->getFriendProfile() }}
+                        @endif
                     </td>
                 </tr>
                 <tr>
@@ -24,11 +27,13 @@
                         {{ __('messages.model.friend.profile.followerProfile') }}
                     </th>
                     <td class="px-6 py-4 whitespace-nowrap">
+                        @if(isset($profile->profile))
                         {{ $profile->profile->getFollowerProfile() }}
+                        @endif
                     </td>
                 </tr>
             </table>
         </div>
     </div>
 </div>
-@endif
+{{ $profile->controllerView('friend/components/namespace/user/profile/controller') }}

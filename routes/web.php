@@ -94,6 +94,7 @@ Route::post('/players/{userId}/friend/{namespaceName}/sendRequest/send','App\Htt
 Route::post('/players/{userId}/friend/{namespaceName}/sendRequest/delete','App\Http\Controllers\FriendController@deleteRequest');
 Route::post('/players/{userId}/friend/{namespaceName}/receiveRequest/accept','App\Http\Controllers\FriendController@acceptRequest');
 Route::post('/players/{userId}/friend/{namespaceName}/receiveRequest/reject','App\Http\Controllers\FriendController@rejectRequest');
+Route::post('/players/{userId}/friend/{namespaceName}/profile/update','App\Http\Controllers\FriendController@updateProfile');
 
 Route::get('/players/{userId}/chat/{namespaceName}','App\Http\Controllers\ChatController@namespace');
 Route::get('/players/{userId}/chat/{namespaceName}/room/{roomName}','App\Http\Controllers\ChatController@room');

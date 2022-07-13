@@ -205,6 +205,9 @@ return [
     "model.friend.friend.action.accept" => "確定",
     "model.friend.friend.action.detail" => "詳細",
     "model.friend.profile" => "プロフィール",
+    "model.friend.profile.publicProfile" => "公開プロフィール",
+    "model.friend.profile.followerProfile" => "フォロワー向けプロフィール",
+    "model.friend.profile.friendProfile" => "フレンド向けプロフィール",
     "model.friend.sendRequest" => "送信済みフレンドリクエスト",
     "model.friend.sendRequest.userId" => "対象ユーザーID",
     "model.friend.sendRequest.targetUserId" => "対象ユーザーID",
@@ -216,6 +219,7 @@ return [
     "model.friend.receiveRequest.fromUserId" => "送信元ユーザーID",
     "model.friend.receiveRequest.action.accept" => "確定",
     "model.friend.receiveRequest.action.reject" => "拒否",
+    "model.friend.profile.action.update" => "更新",
 
     "model.ranking" => "ランキング",
     "model.ranking.namespace.name" => "ネームスペース名",

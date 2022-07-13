@@ -212,4 +212,33 @@ class FriendController extends Controller
         return redirect()->to("/players/$userId?mode=friend");
     }
 
+    public static function updateProfile(
+        Request $request,
+    ): View|RedirectResponse
+    {
+        $userId = $request->userId;
+        $namespaceName = $request->namespaceName;
+        $publicProfile = $request->publicProfile;
+        $followerProfile = $request->followerProfile;
+        $friendProfile = $request->friendProfile;
+
+        try {
+            (new PlayerDomain($userId))
+                ->friend()
+                ->namespace($namespaceName)
+                ->user($userId)
+                ->profile()
+                ->update(
+                    $publicProfile,
+                    $followerProfile,
+                    $friendProfile
+                );
+        } catch (Gs2Exception $e) {
+            return view('error')
+                ->with("errors", $e);
+        }
+
+        return redirect()->to("/players/$userId?mode=friend");
+    }
+
 }
