@@ -15,7 +15,18 @@
     </div>
     @if($permission != 'null')
     <div class="m-4 bg-white shadow rounded-lg">
+        <label class="p-4 block mb-2 text-lg font-medium text-gray-900 dark:text-gray-300">
+            {{ __('messages.model.account.takeOvers') }}
+        </label>
         {{ $namespace->user(request()->userId)->currentTakeOversView('account/components/namespace/user/takeOver/current_list') }}
+    </div>
+    @endif
+    @if($namespace->model()->namespace->getDifferentUserIdForLoginAndDataRetention())
+    <div class="m-4 bg-white shadow rounded-lg">
+        <label class="p-4 block mb-2 text-lg font-medium text-gray-900 dark:text-gray-300">
+            {{ __('messages.model.account.dataOwners') }}
+        </label>
+        {{ $namespace->user(request()->userId)->dataOwner()->infoView('account/components/namespace/user/dataOwner/info') }}
     </div>
     @endif
 @endforeach

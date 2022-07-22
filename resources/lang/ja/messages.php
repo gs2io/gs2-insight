@@ -383,6 +383,10 @@ return [
     "model.account.takeOver.action.delete" => "削除",
     "model.account.takeOver.action.accept" => "確定",
     "model.account.takeOver.action.detail" => "詳細",
+    "model.account.dataOwners" => "データオーナーID",
+    "model.account.dataOwner.name" => "データオーナーID",
+    "model.account.dataOwner.action.delete" => "削除",
+    "model.account.dataOwner.action.accept" => "確定",
 
     "model.gateway" => "接続",
     "model.gateway.namespace.action.detail" => "詳細",

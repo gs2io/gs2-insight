@@ -391,6 +391,10 @@ return [
     "model.account.takeOver.action.delete" => "Delete",
     "model.account.takeOver.action.accept" => "Accept",
     "model.account.takeOver.action.detail" => "Detail",
+    "model.account.dataOwners" => "Data Owner ID",
+    "model.account.dataOwner.name" => "Data Owner ID",
+    "model.account.dataOwner.action.delete" => "Delete",
+    "model.account.dataOwner.action.accept" => "Accept",
 
     "model.gateway" => "Connection",
     "model.gateway.namespace.action.detail" => "Detail",

@@ -4,6 +4,10 @@ namespace App\Domain\Gs2Account;
 
 use App\Domain\BaseDomain;
 use App\Models\Player;
+use Gs2\Account\Gs2AccountRestClient;
+use Gs2\Account\Model\Namespace_;
+use Gs2\Account\Request\GetNamespaceRequest;
+use Gs2\Core\Net\Gs2RestSession;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use JetBrains\PhpStorm\Pure;
@@ -11,11 +15,39 @@ use JetBrains\PhpStorm\Pure;
 class NamespaceDomain extends BaseDomain {
 
     public string $namespaceName;
+    public ?Namespace_ $namespace;
 
     public function __construct(
         string $namespaceName,
+        Namespace_ $namespace = null,
     ) {
         $this->namespaceName = $namespaceName;
+        $this->namespace = $namespace;
+    }
+
+    public function model(): NamespaceDomain
+    {
+        try {
+            $item = $this->gs2(
+                function (Gs2RestSession $session) {
+                    $client = new Gs2AccountRestClient(
+                        $session,
+                    );
+                    $result = $client->getNamespace(
+                        (new GetNamespaceRequest())
+                            ->withNamespaceName($this->namespaceName)
+                    );
+                    return $result->getItem();
+                }
+            );
+            return new NamespaceDomain(
+                $this->namespaceName,
+                $item,
+            );
+        } catch (\Exception $e) {
+            var_dump($e->getMessage());
+        }
+        return $this;
     }
 
     #[Pure] public function user(

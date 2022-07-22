@@ -80,6 +80,12 @@ class UserDomain extends BaseDomain {
         return [];
     }
 
+    #[Pure] public function dataOwner(): DataOwnerDomain {
+        return new DataOwnerDomain(
+            $this
+        );
+    }
+
     public function infoView(
         string $view,
     ): View

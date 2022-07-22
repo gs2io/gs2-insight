@@ -95,4 +95,29 @@ class AccountController extends Controller
 
         return redirect()->to("/players/$userId?mode=account");
     }
+
+    public static function deleteDataOwner(
+        Request $request,
+    ): View|RedirectResponse
+    {
+        $userId = $request->userId;
+        $namespaceName = $request->namespaceName;
+
+        try {
+            (new PlayerDomain($userId))
+                ->account()
+                ->namespace(
+                    $namespaceName,
+                )->user(
+                    $userId,
+                )->dataOwner(
+                )->delete(
+                );
+        } catch (Gs2Exception $e) {
+            return view('error')
+                ->with("errors", $e);
+        }
+
+        return redirect()->to("/players/$userId?mode=account");
+    }
 }

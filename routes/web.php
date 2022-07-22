@@ -24,6 +24,7 @@ Route::get('/players/{userId}/account/{namespaceName}','App\Http\Controllers\Acc
 Route::get('/players/{userId}/account/{namespaceName}/takeOver/{type}','App\Http\Controllers\AccountController@takeOver');
 Route::post('/players/{userId}/account/{namespaceName}/takeOver/add','App\Http\Controllers\AccountController@add');
 Route::post('/players/{userId}/account/{namespaceName}/takeOver/{type}/{userIdentifier}/delete','App\Http\Controllers\AccountController@delete');
+Route::post('/players/{userId}/account/{namespaceName}/dataOwner/delete','App\Http\Controllers\AccountController@deleteDataOwner');
 
 Route::get('/players/{userId}/quest/{namespaceName}','App\Http\Controllers\QuestController@namespace');
 Route::get('/players/{userId}/quest/{namespaceName}/questGroup/{questGroupModelName}','App\Http\Controllers\QuestController@questGroup');
