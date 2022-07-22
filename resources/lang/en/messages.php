@@ -395,6 +395,7 @@ return [
     "model.gateway" => "Connection",
     "model.gateway.namespace.action.detail" => "Detail",
     "model.gateway.webSocketSession.action.disconnect" => "Disconnect",
+    "model.gateway.webSocketSession.action.disconnectAll" => "Disconnect All Sessions",
     "model.gateway.webSocketSession.action.accept" => "Accept",
 
     "model.realtime" => "Realtime",
@@ -464,6 +465,9 @@ return [
 
     "model.metrics" => "Metrics",
     "model.metrics.help" => "The entire game player's behavior can be viewed in chart form.",
+
+    "model.danger" => "Danger",
+    "model.danger.help" => "This is an operation that requires special attention when using",
 
     "model.stampSheet.action.detail" => "Detail",
 

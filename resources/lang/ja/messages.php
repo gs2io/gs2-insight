@@ -387,6 +387,7 @@ return [
     "model.gateway" => "接続",
     "model.gateway.namespace.action.detail" => "詳細",
     "model.gateway.webSocketSession.action.disconnect" => "切断",
+    "model.gateway.webSocketSession.action.disconnectAll" => "全てのプレイヤーを切断",
     "model.gateway.webSocketSession.action.accept" => "確定",
 
     "model.realtime" => "Realtime",
@@ -456,6 +457,9 @@ return [
 
     "model.metrics" => "メトリクス",
     "model.metrics.help" => "ゲームプレイヤーの行動全体をチャート形式で見ることができます。",
+
+    "model.danger" => "危険な操作",
+    "model.danger.help" => "利用する上で特に注意が必要な操作です",
 
     "model.stampSheet.action.detail" => "詳細",
 

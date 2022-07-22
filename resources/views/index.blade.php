@@ -20,6 +20,15 @@
                 {{ __('messages.model.metrics.help') }}
             </p>
         </div>
+        @if($permission == 'administrator')
+        <div class="p-1"></div>
+        <div class="p-4 bg-white shadow-sm rounded-lg">
+            <a href="{{ url('/danger') }}" class="text-lg">{{ __('messages.model.danger') }}</a>
+            <p class="text-sm text-black-50">
+                {{ __('messages.model.danger.help') }}
+            </p>
+        </div>
+        @endif
         <div class="p-1"></div>
         <div class="p-4 bg-white shadow-sm rounded-lg">
             <a href="{{ url('/gcp') }}" class="text-lg">{{ __('messages.model.setup') }}</a>

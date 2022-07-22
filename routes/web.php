@@ -184,6 +184,10 @@ Route::get('/metrics/showcase/{namespaceName}/showcaseModel/{showcaseModelName}/
 Route::get('/metrics/stamina/{namespaceName}','App\Http\Controllers\Metrics\Stamina\NamespaceController@index');
 Route::get('/metrics/stamina/{namespaceName}/staminaModel/{staminaModelName}','App\Http\Controllers\Metrics\Stamina\StaminaModelController@index');
 
+Route::get('/danger','App\Http\Controllers\DangerController@index');
+Route::post('/danger/gateway/{namespaceName}/webSocketSession/disconnectAll','App\Http\Controllers\DangerController@disconnectAll');
+
+
 Route::get('/gcp','App\Http\Controllers\GcpController@index');
 Route::post('/gcp/create','App\Http\Controllers\GcpController@create');
 Route::post('/gcp/update','App\Http\Controllers\GcpController@update');
