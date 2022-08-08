@@ -1,0 +1,164 @@
+version: 2.1
+
+orbs:
+  aws-ecr: circleci/aws-ecr@6.7.0
+
+jobs:
+  deploy_ap_northeast_1_dev:
+    docker:
+      - image: cimg/python:3.7
+        environment:
+          AWS_REGION: ap-northeast-1
+          AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID_DEV}
+          AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY_DEV}
+          AWS_ECR_ACCOUNT_URL: 193652665524.dkr.ecr.ap-northeast-1.amazonaws.com
+    steps:
+      - checkout
+      - aws-ecr/build-and-push-image:
+          repo: gs2-insight
+          setup-remote-docker: true
+          tag: latest
+  deploy_us_east_1_dev:
+    docker:
+      - image: cimg/python:3.7
+        environment:
+          AWS_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID_DEV}
+          AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY_DEV}
+          AWS_ECR_ACCOUNT_URL: 193652665524.dkr.ecr.us-east-1.amazonaws.com
+    steps:
+      - checkout
+      - aws-ecr/build-and-push-image:
+          repo: gs2-insight
+          setup-remote-docker: true
+          tag: latest
+  deploy_eu_west_1_dev:
+    docker:
+      - image: cimg/python:3.7
+        environment:
+          AWS_REGION: eu-west-1
+          AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID_DEV}
+          AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY_DEV}
+          AWS_ECR_ACCOUNT_URL: 193652665524.dkr.ecr.eu-west-1.amazonaws.com
+    steps:
+      - checkout
+      - aws-ecr/build-and-push-image:
+          repo: gs2-insight
+          setup-remote-docker: true
+          tag: latest
+  deploy_ap_southeast_1_dev:
+    docker:
+      - image: cimg/python:3.7
+        environment:
+          AWS_REGION: ap-southeast-1
+          AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID_DEV}
+          AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY_DEV}
+          AWS_ECR_ACCOUNT_URL: 193652665524.dkr.ecr.ap-southeast-1.amazonaws.com
+    steps:
+      - checkout
+      - aws-ecr/build-and-push-image:
+          repo: gs2-insight
+          setup-remote-docker: true
+          tag: latest
+
+  deploy_ap_northeast_1_live:
+    docker:
+      - image: cimg/python:3.7
+        environment:
+          AWS_REGION: ap-northeast-1
+          AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID_LIVE}
+          AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY_LIVE}
+          AWS_ECR_ACCOUNT_URL: 258965805804.dkr.ecr.ap-northeast-1.amazonaws.com
+    steps:
+      - checkout
+      - aws-ecr/build-and-push-image:
+          repo: gs2-insight
+          setup-remote-docker: true
+          tag: latest
+  deploy_us_east_1_live:
+    docker:
+      - image: cimg/python:3.7
+        environment:
+          AWS_REGION: us-east-1
+          AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID_LIVE}
+          AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY_LIVE}
+          AWS_ECR_ACCOUNT_URL: 258965805804.dkr.ecr.us-east-1.amazonaws.com
+    steps:
+      - checkout
+      - aws-ecr/build-and-push-image:
+          repo: gs2-insight
+          setup-remote-docker: true
+          tag: latest
+  deploy_eu_west_1_live:
+    docker:
+      - image: cimg/python:3.7
+        environment:
+          AWS_REGION: eu-west-1
+          AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID_LIVE}
+          AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY_LIVE}
+          AWS_ECR_ACCOUNT_URL: 258965805804.dkr.ecr.eu-west-1.amazonaws.com
+    steps:
+      - checkout
+      - aws-ecr/build-and-push-image:
+          repo: gs2-insight
+          setup-remote-docker: true
+          tag: latest
+  deploy_ap_southeast_1_live:
+    docker:
+      - image: cimg/python:3.7
+        environment:
+          AWS_REGION: ap-southeast-1
+          AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID_LIVE}
+          AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY_LIVE}
+          AWS_ECR_ACCOUNT_URL: 258965805804.dkr.ecr.ap-southeast-1.amazonaws.com
+    steps:
+      - checkout
+      - aws-ecr/build-and-push-image:
+          repo: gs2-insight
+          setup-remote-docker: true
+          tag: latest
+
+workflows:
+  build-and-deploy:
+    jobs:
+      - deploy_ap_northeast_1_dev:
+          filters:
+            branches:
+              only:
+                - main
+      - deploy_us_east_1_dev:
+          filters:
+            branches:
+              only:
+                - main
+      - deploy_eu_west_1_dev:
+          filters:
+            branches:
+              only:
+                - main
+      - deploy_ap_southeast_1_dev:
+          filters:
+            branches:
+              only:
+                - main
+
+      - deploy_ap_northeast_1_live:
+          filters:
+            branches:
+              only:
+                - main
+      - deploy_us_east_1_live:
+          filters:
+            branches:
+              only:
+                - main
+      - deploy_eu_west_1_live:
+          filters:
+            branches:
+              only:
+                - main
+      - deploy_ap_southeast_1_live:
+          filters:
+            branches:
+              only:
+                - main

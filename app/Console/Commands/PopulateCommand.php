@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Domain\GcpDomain;
+use App\Http\Controllers\GcpController;
 use DateInterval;
 use DatePeriod;
 use Illuminate\Console\Command;
@@ -46,50 +47,18 @@ class PopulateCommand extends Command
 
         $gcp = (new GcpDomain())->model();
         if ($gcp != null) {
-            $startDate = date_create($gcp->beginAt);
-            $endDate = date_create($gcp->endAt);
-            $interval = DateInterval::createFromDateString("1 second");
-
-            $datasetName = $gcp->datasetName;
-            $credentials = $gcp->credentials;
-
             $totalBytesProcessed = 0;
 
-//            $timelines = new Timelines(
-//                new DatePeriod($startDate, $interval, $endDate),
-//                $datasetName,
-//                $credentials,
-//            );
-//            $timelines->load();
-//            $timelines->loadDetail("e51726ee-71da-4539-a026-a8efd7a761f2");
-
-//            $players = new Players(
-//                new \DatePeriod($startDate, $interval, $endDate),
-//                $datasetName,
-//                $credentials,
-//            );
-//            $players->load();
-//
-//            $result = (new Index(
-//                new DatePeriod($startDate, $interval, $endDate),
-//                $datasetName,
-//                $credentials,
-//            ))->load();
-//            $totalBytesProcessed += $result->totalBytesProcessed;
-
-            $result = (new \App\Domain\Aggregate\Metrics\Gateway\Index(
-                new DatePeriod($startDate, $interval, $endDate),
-                $datasetName,
-                $credentials,
-            ))->load();
-            $totalBytesProcessed += $result->totalBytesProcessed;
-
-//            $result = (new GrnKey(
-//                new DatePeriod($startDate, $interval, $endDate),
-//                $datasetName,
-//                $credentials,
-//            ))->load("8a5f966c-bd4f-4848-a036-8a3305ccd898");
-//            $totalBytesProcessed += $result->totalBytesProcessed;
+            $currentStatus = "INIT";
+            while ($currentStatus != null) {
+                printf("Fetching...  %s\n", $currentStatus);
+                $result = GcpController::loadImpl(
+                    $currentStatus,
+                    $totalBytesProcessed,
+                );
+                $currentStatus = $result["nextStatus"]?->toString();
+                $totalBytesProcessed += $result["totalBytesProcessed"];
+            }
 
             $elapsed = microtime(true) - $begin;
             printf("Processing time:  %.3f sec\n", $elapsed);

@@ -63,11 +63,12 @@ class GcpController extends Controller
         return redirect()->to("/gcp/load");
     }
 
-    public static function load(Request $request): View
-    {
-        $totalBytesProcessed = $request->totalBytesProcessed ?? 0;
+    public static function loadImpl(
+        string $currentStatus,
+        int $totalBytesProcessed,
+    ): array {
 
-        $currentStatus = $request->status ? LoadTarget::valueOf($request->status) : LoadTarget::Initialize;
+        $currentStatus = $currentStatus ? LoadTarget::valueOf($currentStatus) : LoadTarget::Initialize;
         $nextStatus = LoadTarget::Done;
 
         $gcp = (new GcpDomain())->model();
@@ -330,6 +331,24 @@ class GcpController extends Controller
                 $nextStatus = null;
                 break;
         }
+        return [
+            "currentStatus" => $currentStatus,
+            "nextStatus" => $nextStatus,
+            "totalBytesProcessed" => $totalBytesProcessed,
+        ];
+    }
+
+
+    public static function load(Request $request): View
+    {
+        $result = self::loadImpl(
+            $request->status,
+            $request->totalBytesProcessed ?? 0
+        );
+        $currentStatus = $result["currentStatus"];
+        $totalBytesProcessed = $result["totalBytesProcessed"];
+        $nextStatus = $result["nextStatus"];
+
         return view('gcp/load')
             ->with("gcp", (new GcpDomain())->model())
             ->with("currentStatus", $currentStatus)
