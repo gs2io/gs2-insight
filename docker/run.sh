@@ -5,6 +5,14 @@ php ./composer.phar install
 
 mv .env.ecs .env
 
+if test "$BASIC_AUTH_USER" != ""; then
+    sed -e s/APP_BASIC_USER=/APP_BASIC_USER=$BASIC_AUTH_USER/g .env
+fi
+
+if test "$BASIC_AUTH_PASSWORD" != ""; then
+    sed -e s/APP_BASIC_PASSWORD=/APP_BASIC_USER=$BASIC_AUTH_PASSWORD/g .env
+fi
+
 php artisan migrate --force
 
 if test "$BIGQUERY_DATASET" != "" -a "$BIGQUERY_CREDENTIAL" != ""; then
