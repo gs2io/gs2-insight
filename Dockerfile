@@ -26,4 +26,5 @@ RUN cd /etc/apache2/mods-enabled \
     && ln -s ../mods-available/rewrite.load
 
 COPY ./docker/run.sh /tmp
+COPY . /var/www/html/public
 ENTRYPOINT ["/tmp/run.sh"]
