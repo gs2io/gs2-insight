@@ -9,4 +9,6 @@ if test "$BIGQUERY_DATASET" != "" -a "$BIGQUERY_CREDENTIAL" != ""; then
     php artisan command:populate
 fi
 
+mv .env.ecs .env
+
 php artisan serve --host=0.0.0.0 --port=$PORT
