@@ -10,7 +10,7 @@ if test "$BASIC_AUTH_USER" != ""; then
 fi
 
 if test "$BASIC_AUTH_PASSWORD" != ""; then
-    sed -e s/APP_BASIC_PASSWORD=/APP_BASIC_USER=$BASIC_AUTH_PASSWORD/g .env
+    sed -e s/APP_BASIC_PASSWORD=/APP_BASIC_PASSWORD=$BASIC_AUTH_PASSWORD/g .env
 fi
 
 php artisan migrate --force
