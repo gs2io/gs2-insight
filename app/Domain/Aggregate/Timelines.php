@@ -12,6 +12,7 @@ use App\Models\IssueStampSheetLogJoinTask;
 use App\Models\Timeline;
 use DatePeriod;
 use Google\Cloud\BigQuery\BigQueryClient;
+use Google\Cloud\Core\Exception\NotFoundException;
 use Illuminate\Support\Carbon;
 use JetBrains\PhpStorm\Pure;
 
@@ -35,60 +36,65 @@ class Timelines extends AbstractAggregate
         $totalBytesProcessed = 0;
 
         $bigQuery = $this->createClient();
-        $query = $bigQuery->query("
-            SELECT
-                transactionId, service, method, action, args, tasks, userId, timestamp
-            FROM
-                `{$this->table('IssueStampSheet')}`
-            WHERE
-                {$this->timeRange()}
-        ");
-        $query->allowLargeResults(true);
-        $items = $bigQuery->runQuery($query);
+        try {
+            $query = $bigQuery->query("
+                SELECT
+                    transactionId, service, method, action, args, tasks, userId, timestamp
+                FROM
+                    `{$this->table('IssueStampSheet')}`
+                WHERE
+                    {$this->timeRange()}
+            ");
+            $query->allowLargeResults(true);
+            $items = $bigQuery->runQuery($query);
 
-        $totalBytesProcessed += $items->info()['totalBytesProcessed'];
+            $totalBytesProcessed += $items->info()['totalBytesProcessed'];
 
-        foreach ($items as $item) {
-            Timeline::query()->firstOrCreate(
-                ["transactionId" => $item["transactionId"]],
-                [
-                    "type" => 'issueStampSheet',
-                    "userId" => array_key_exists('userId', $item) ? $item['userId'] : json_decode($item["args"], true)['userId'],
-                    "action" => 'Gs2' . ucwords($item["service"]) . ':' . ucwords($item["method"]),
-                    "rewardAction" => $item["action"],
-                    "rewardArgs" => $item["args"],
-                    "timestamp" => $item["timestamp"],
-                ],
-            );
-
-            IssueStampSheetLog::query()->firstOrCreate(
-                ["transactionId" => $item["transactionId"]],
-                [
-                    "type" => 'issueStampSheet',
-                    "userId" => array_key_exists('userId', $item) ? $item['userId'] : json_decode($item["args"], true)['userId'],
-                    "service" => $item["service"],
-                    "method" => $item["method"],
-                    "action" => $item["action"],
-                    "args" => $item["args"],
-                    "tasks" => $item["tasks"],
-                    "timestamp" => Carbon::createFromInterface($item["timestamp"]->get()),
-                ],
-            );
-
-            $tasks = json_decode($item["tasks"], true);
-            foreach ($tasks as $task) {
-                $task = json_decode($task, true);
-                IssueStampSheetLogJoinTask::query()->firstOrCreate(
+            foreach ($items as $item) {
+                Timeline::query()->firstOrCreate(
                     ["transactionId" => $item["transactionId"]],
                     [
-                        "taskId" => $task["taskId"],
-                        "action" => $task["action"],
+                        "type" => 'issueStampSheet',
+                        "userId" => array_key_exists('userId', $item) ? $item['userId'] : json_decode($item["args"], true)['userId'],
+                        "action" => 'Gs2' . ucwords($item["service"]) . ':' . ucwords($item["method"]),
+                        "rewardAction" => $item["action"],
+                        "rewardArgs" => $item["args"],
+                        "timestamp" => $item["timestamp"],
                     ],
                 );
+
+                IssueStampSheetLog::query()->firstOrCreate(
+                    ["transactionId" => $item["transactionId"]],
+                    [
+                        "type" => 'issueStampSheet',
+                        "userId" => array_key_exists('userId', $item) ? $item['userId'] : json_decode($item["args"], true)['userId'],
+                        "service" => $item["service"],
+                        "method" => $item["method"],
+                        "action" => $item["action"],
+                        "args" => $item["args"],
+                        "tasks" => $item["tasks"],
+                        "timestamp" => Carbon::createFromInterface($item["timestamp"]->get()),
+                    ],
+                );
+
+                $tasks = json_decode($item["tasks"], true);
+                foreach ($tasks as $task) {
+                    $task = json_decode($task, true);
+                    IssueStampSheetLogJoinTask::query()->firstOrCreate(
+                        ["transactionId" => $item["transactionId"]],
+                        [
+                            "taskId" => $task["taskId"],
+                            "action" => $task["action"],
+                        ],
+                    );
+                }
             }
+        } catch (NotFoundException) {
+
         }
 
-        $query = $bigQuery->query("
+        try {
+            $query = $bigQuery->query("
             SELECT
                 a.taskId,
                 c.transactionId,
@@ -158,92 +164,99 @@ class Timelines extends AbstractAggregate
                 ON
                     a.taskId = c.taskId
         ");
-        $query->allowLargeResults(true);
-        $items = $bigQuery->runQuery($query);
+            $query->allowLargeResults(true);
+            $items = $bigQuery->runQuery($query);
 
-        $totalBytesProcessed += $items->info()['totalBytesProcessed'];
+            $totalBytesProcessed += $items->info()['totalBytesProcessed'];
 
-        foreach ($items as $item) {
-            if (isset($item["transactionId"]) && isset($item["service"])) {
-                ExecuteStampTaskLog::query()->firstOrCreate(
-                    ["taskId" => $item["taskId"]],
-                    [
-                        "userId" => array_key_exists('userId', $item) ? $item['userId'] : json_decode($item["args"], true)['userId'],
-                        "transactionId" => $item["transactionId"],
-                        "service" => $item["service"],
-                        "method" => $item["method"],
-                        "action" => $item["action"],
-                        "args" => $item["args"],
-                        "result" => $item["result"],
-                        "timestamp" => Carbon::createFromInterface($item["timestamp"]->get()),
-                    ],
-                );
+            foreach ($items as $item) {
+                if (isset($item["transactionId"]) && isset($item["service"])) {
+                    ExecuteStampTaskLog::query()->firstOrCreate(
+                        ["taskId" => $item["taskId"]],
+                        [
+                            "userId" => array_key_exists('userId', $item) ? $item['userId'] : json_decode($item["args"], true)['userId'],
+                            "transactionId" => $item["transactionId"],
+                            "service" => $item["service"],
+                            "method" => $item["method"],
+                            "action" => $item["action"],
+                            "args" => $item["args"],
+                            "result" => $item["result"],
+                            "timestamp" => Carbon::createFromInterface($item["timestamp"]->get()),
+                        ],
+                    );
+                }
             }
+        } catch (NotFoundException) {
+
         }
 
-        $query = $bigQuery->query("
-            SELECT
-                a.transactionId,
-                b.service,
-                b.method,
-                a.action,
-                a.userId,
-                a.args,
-                b.result,
-                a.timestamp
-            FROM
-                (
-                    SELECT
-                        transactionId,
-                        action,
-                        args,
-                        userId,
-                        timestamp
-                    FROM
-                        `{$this->table('ExecuteStampSheet')}`
-                    WHERE
-                        {$this->timeRange()}
-                ) as a
-                LEFT JOIN
-                (
-                    SELECT
-                        JSON_EXTRACT_SCALAR(JSON_EXTRACT_SCALAR(JSON_EXTRACT_SCALAR(request, '$.stampSheet'), '$.body'), '$.transactionId') as transactionId,
-                        service,
-                        method,
-                        result
-                    FROM
-                        `{$this->table('Invoke')}`
-                    WHERE
-                        {$this->timeRange()} AND
-                        JSON_EXTRACT_SCALAR(JSON_EXTRACT_SCALAR(JSON_EXTRACT_SCALAR(request, '$.stampSheet'), '$.body'), '$.transactionId') IS NOT NULL
-                ) as b
-                ON
-                    a.transactionId = b.transactionId
-        ");
-        $query->allowLargeResults(true);
-        $items = $bigQuery->runQuery($query);
+        try {
+            $query = $bigQuery->query("
+                SELECT
+                    a.transactionId,
+                    b.service,
+                    b.method,
+                    a.action,
+                    a.userId,
+                    a.args,
+                    b.result,
+                    a.timestamp
+                FROM
+                    (
+                        SELECT
+                            transactionId,
+                            action,
+                            args,
+                            userId,
+                            timestamp
+                        FROM
+                            `{$this->table('ExecuteStampSheet')}`
+                        WHERE
+                            {$this->timeRange()}
+                    ) as a
+                    LEFT JOIN
+                    (
+                        SELECT
+                            JSON_EXTRACT_SCALAR(JSON_EXTRACT_SCALAR(JSON_EXTRACT_SCALAR(request, '$.stampSheet'), '$.body'), '$.transactionId') as transactionId,
+                            service,
+                            method,
+                            result
+                        FROM
+                            `{$this->table('Invoke')}`
+                        WHERE
+                            {$this->timeRange()} AND
+                            JSON_EXTRACT_SCALAR(JSON_EXTRACT_SCALAR(JSON_EXTRACT_SCALAR(request, '$.stampSheet'), '$.body'), '$.transactionId') IS NOT NULL
+                    ) as b
+                    ON
+                        a.transactionId = b.transactionId
+            ");
+            $query->allowLargeResults(true);
+            $items = $bigQuery->runQuery($query);
 
-        $totalBytesProcessed += $items->info()['totalBytesProcessed'];
+            $totalBytesProcessed += $items->info()['totalBytesProcessed'];
 
-        foreach ($items as $item) {
-            if (isset($item["service"])) {
-                $result = json_decode($item["result"], true);
-                if (in_array('result', array_keys($result))) {
-                    $item["result"] = $result['result'];
+            foreach ($items as $item) {
+                if (isset($item["service"])) {
+                    $result = json_decode($item["result"], true);
+                    if (in_array('result', array_keys($result))) {
+                        $item["result"] = $result['result'];
+                    }
+                    ExecuteStampSheetLog::query()->firstOrCreate(
+                        ["transactionId" => $item["transactionId"]],
+                        [
+                            "userId" => array_key_exists('userId', $item) ? $item['userId'] : json_decode($item["args"], true)['userId'],
+                            "service" => $item["service"],
+                            "method" => $item["method"],
+                            "action" => $item["action"],
+                            "args" => $item["args"],
+                            "result" => $item["result"],
+                            "timestamp" => Carbon::createFromInterface($item["timestamp"]->get()),
+                        ],
+                    );
                 }
-                ExecuteStampSheetLog::query()->firstOrCreate(
-                    ["transactionId" => $item["transactionId"]],
-                    [
-                        "userId" => array_key_exists('userId', $item) ? $item['userId'] : json_decode($item["args"], true)['userId'],
-                        "service" => $item["service"],
-                        "method" => $item["method"],
-                        "action" => $item["action"],
-                        "args" => $item["args"],
-                        "result" => $item["result"],
-                        "timestamp" => Carbon::createFromInterface($item["timestamp"]->get()),
-                    ],
-                );
             }
+        } catch (NotFoundException) {
+
         }
 
         return new LoadResult(
