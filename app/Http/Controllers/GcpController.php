@@ -64,7 +64,7 @@ class GcpController extends Controller
     }
 
     public static function loadImpl(
-        string $currentStatus,
+        string|null $currentStatus,
         int $totalBytesProcessed,
     ): array {
 
