@@ -114,6 +114,7 @@ Route::post('/players/{userId}/showcase/{namespaceName}/showcase/{showcaseModelN
 
 Route::get('/players/{userId}/ranking/{namespaceName}','App\Http\Controllers\RankingController@namespace');
 Route::get('/players/{userId}/ranking/{namespaceName}/category/{categoryModelName}','App\Http\Controllers\RankingController@category');
+Route::post('/players/{userId}/ranking/{namespaceName}/category/{categoryModelName}/calc','App\Http\Controllers\RankingController@calc');
 
 Route::get('/players/{userId}/jobQueue/{namespaceName}','App\Http\Controllers\JobQueueController@namespace');
 Route::get('/players/{userId}/jobQueue/{namespaceName}/job/{jobName}','App\Http\Controllers\JobQueueController@job');

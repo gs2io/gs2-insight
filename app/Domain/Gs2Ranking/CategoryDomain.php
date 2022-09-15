@@ -7,6 +7,7 @@ use App\Models\GrnKey;
 use App\Models\Timeline;
 use Gs2\Core\Net\Gs2RestSession;
 use Gs2\Ranking\Gs2RankingRestClient;
+use Gs2\Ranking\Request\CalcRankingRequest;
 use Gs2\Ranking\Request\GetRankingByUserIdRequest;
 use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
@@ -59,6 +60,23 @@ class CategoryDomain extends BaseDomain {
         return view($view)
             ->with("category", $this)
             ->with("ranking", $ranking);
+    }
+
+    public function calc(
+    )
+    {
+        $this->gs2(
+            function (Gs2RestSession $session) {
+                $client = new Gs2RankingRestClient(
+                    $session,
+                );
+                $client->calcRanking(
+                    (new CalcRankingRequest())
+                        ->withNamespaceName($this->user->namespace->namespaceName)
+                        ->withCategoryName($this->categoryModelName)
+                );
+            }
+        );
     }
 
     public function timeline(): Builder

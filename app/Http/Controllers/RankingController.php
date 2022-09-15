@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Gs2Ranking\ServiceDomain;
+use App\Domain\PlayerDomain;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class RankingController extends Controller
@@ -31,5 +33,26 @@ class RankingController extends Controller
 
         return view('ranking/category')
             ->with("category", $category);
+    }
+
+    public static function calc(
+        Request $request,
+    ): RedirectResponse
+    {
+        $userId = $request->userId;
+        $namespaceName = $request->namespaceName;
+        $categoryModelName = $request->categoryModelName;
+
+        (new PlayerDomain($userId))
+            ->ranking()
+            ->namespace(
+                $namespaceName,
+            )->user(
+                $userId,
+            )->category(
+                $categoryModelName,
+            )->calc();
+
+        return redirect()->to("/players/$userId?mode=ranking");
     }
 }

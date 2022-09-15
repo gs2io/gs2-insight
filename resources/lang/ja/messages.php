@@ -233,6 +233,7 @@ return [
     "model.ranking.score.metadata" => "メタデータ",
     "model.ranking.categories" => "カテゴリー",
     "model.ranking.category.action.detail" => "詳細",
+    "model.ranking.category.action.calc" => "集計実行",
 
     "model.experience" => "経験値",
     "model.experience.namespace.name" => "ネームスペース名",

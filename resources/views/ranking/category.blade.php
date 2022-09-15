@@ -26,6 +26,14 @@
             <div class="flex">
                 @if($permission != 'null')
                 <div class="w-25">
+                    <div class="m-4 bg-white rounded-lg">
+                        <form action="{{ "/players/{$category->user->userId}/ranking/{$category->user->namespace->namespaceName}/category/{$category->categoryModelName}/calc" }}" method="post">
+                            @csrf
+                            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-yellow-400 hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+                                {{ __('messages.model.ranking.category.action.calc') }}
+                            </button>
+                        </form>
+                    </div>
                     <div class="m-4 bg-white shadow rounded-lg">
                         <label class="p-4 block mb-2 text-lg font-medium text-gray-900 dark:text-gray-300">
                             {{ __('messages.model.current') }}

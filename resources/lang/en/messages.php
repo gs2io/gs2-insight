@@ -237,6 +237,7 @@ return [
     "model.ranking.score.metadata" => "Metadata",
     "model.ranking.categories" => "Category Models",
     "model.ranking.category.action.detail" => "Detail",
+    "model.ranking.category.action.calc" => "Calculate Ranking",
 
     "model.experience" => "Experience",
     "model.experience.namespace.name" => "Namespace Name",
