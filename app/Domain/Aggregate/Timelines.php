@@ -289,6 +289,7 @@ class Timelines extends AbstractAggregate
 
         foreach ($result as $item) {
             $request = json_decode($item["request"], true);
+            if ($request === null) continue;
             if (array_key_exists('contextStack', $request)) {
                 unset($request['contextStack']);
             }
