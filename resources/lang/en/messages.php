@@ -511,6 +511,7 @@ return [
     "action.Gs2Friend:Unfollow" => "Delete from followers (GS2-Friend)",
     "action.Gs2Friend:UpdateProfile" => "Update own profile (GS2-Friend)",
     "action.Gs2Friend:DeleteRequest" => "Delete friend request (GS2-Friend)",
+    "action.Gs2Gateway:SetUserId" => "Set User ID (GS2-Gateway)",
     "action.Gs2Inbox:SendMessage" => "Send a message (GS2-Inbox)",
     "action.Gs2Inbox:ReadMessage" => "Read the message(GS2-Inbox)",
     "action.Gs2Inbox:DeleteMessage" => "Delete the message(GS2-Inbox)",
@@ -522,7 +523,10 @@ return [
     "action.Gs2Inventory:ConsumeItemSet" => "Consume the item (GS2-Inventory)",
     "action.Gs2JobQueue:Push" => "Register a job (GS2-JobQueue)",
     "action.Gs2JobQueue:Run" => "Run job (GS2-JobQueue)",
+    "action.Gs2Limit:CountUp" => "Increase the counter (GS2-Limit)",
     "action.Gs2Limit:DeleteCounter" => "Initialize the counter (GS2-Limit)",
+    "action.Gs2Lock:Lock" => "Acquire the lock(GS2-Lock)",
+    "action.Gs2Lock:Unlock" => "Release the lock(GS2-Lock)",
     "action.Gs2Lottery:Draw" => "Execute the lottery (GS2-Lottery)",
     "action.Gs2Mission:Complete" => "Complete mission task (GS2-Mission)",
     "action.Gs2Mission:Receive" => "Record the rewards received (GS2-Mission)",
@@ -546,6 +550,7 @@ return [
     "action.Gs2Stamina:SetRecoverInterval" => "Set stamina recovery interval (GS2-Stamina)",
     "action.Gs2Stamina:SetRecoverValue" => "Set stamina recovery amount (GS2-Stamina)",
     "action.Gs2Ranking:PutScore" => "Put Score (GS2-Ranking)",
+    "action.Gs2Version:CheckVersion" => "Check Version (GS2-Version)",
 
     "error.quest.progress.progress.error.alreadyExists" => "There are quests already in progress",
 ];

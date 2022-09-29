@@ -503,6 +503,7 @@ return [
     "action.Gs2Friend:Unfollow" => "フォロー解除(GS2-Friend)",
     "action.Gs2Friend:UpdateProfile" => "プロフィールを更新(GS2-Friend)",
     "action.Gs2Friend:DeleteRequest" => "フレンドリクエストを取り下げ(GS2-Friend)",
+    "action.Gs2Gateway:SetUserId" => "ユーザーIDを設定 (GS2-Gateway)",
     "action.Gs2Inbox:SendMessage" => "メッセージを送信(GS2-Inbox)",
     "action.Gs2Inbox:ReadMessage" => "メッセージを開封(GS2-Inbox)",
     "action.Gs2Inbox:DeleteMessage" => "メッセージを削除(GS2-Inbox)",
@@ -513,8 +514,11 @@ return [
     "action.Gs2Inventory:DeleteReferenceOf" => "アイテムの参照を削除(GS2-Inventory)",
     "action.Gs2Inventory:ConsumeItemSet" => "アイテムを消費 (GS2-Inventory)",
     "action.Gs2JobQueue:Push" => "ジョブを登録(GS2-JobQueue)",
-    "action.Gs2JobQueue:Run" => "ジョブを実行 (GS2-JobQueue)",
+    "action.Gs2JobQueue:Run" => "ジョブを実行(GS2-JobQueue)",
+    "action.Gs2Limit:CountUp" => "カウンターを加算(GS2-Limit)",
     "action.Gs2Limit:DeleteCounter" => "カウンターを初期化(GS2-Limit)",
+    "action.Gs2Lock:Lock" => "ロックを取得(GS2-Lock)",
+    "action.Gs2Lock:Unlock" => "ロックを開放(GS2-Lock)",
     "action.Gs2Lottery:Draw" => "抽選を実行(GS2-Lottery)",
     "action.Gs2Mission:Complete" => "ミッションタスクを達成(GS2-Mission)",
     "action.Gs2Mission:Receive" => "達成報酬を受け取り済みにする(GS2-Mission)",
@@ -538,6 +542,7 @@ return [
     "action.Gs2Stamina:ConsumeStamina" => "スタミナを消費(GS2-Stamina)",
     "action.Gs2Stamina:GetStamina" => "スタミナを取得(GS2-Stamina)",
     "action.Gs2Ranking:PutScore" => "スコアを登録 (GS2-Ranking)",
+    "action.Gs2Version:CheckVersion" => "バージョンチェック(GS2-Version)",
 
     "error.quest.progress.progress.error.alreadyExists" => "すでに進行中のクエストがあります",
 ];
