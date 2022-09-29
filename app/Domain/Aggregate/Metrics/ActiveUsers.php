@@ -36,7 +36,7 @@ class ActiveUsers extends AbstractMetrics
         $sql = "
             SELECT
                 CONCAT(FORMAT_DATETIME('%Y-%m-%d %H', timestamp), ':00:00') AS date,
-                COUNT(userId) AS value,
+                COUNT(DISTINCT(userId)) AS value,
             FROM
                 `{$this->table()}`
             WHERE
@@ -72,7 +72,7 @@ class ActiveUsers extends AbstractMetrics
         $sql = "
             SELECT
                 CONCAT(FORMAT_DATETIME('%Y-%m-%d', timestamp), '00:00:00') AS date,
-                COUNT(userId) AS value,
+                COUNT(DISTINCT(userId)) AS value,
             FROM
                 `{$this->table()}`
             WHERE
@@ -108,7 +108,7 @@ class ActiveUsers extends AbstractMetrics
         $sql = "
             SELECT
                 CONCAT(FORMAT_DATETIME('%Y-%m', timestamp), '-01 00:00:00') AS date,
-                COUNT(userId) AS value,
+                COUNT(DISTINCT(userId)) AS value,
             FROM
                 `{$this->table()}`
             WHERE
