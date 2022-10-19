@@ -54,15 +54,19 @@ class Players extends AbstractAggregate
                 userId
         ");
         $query->allowLargeResults(true);
-        $items = $bigQuery->runQuery($query);
+        $items = $bigQuery->runQuery($query, [
+            'maxResults' => 1000,
+        ]);
 
         $totalBytesProcessed += $items->info()['totalBytesProcessed'];
 
         foreach ($items as $item) {
-            Player::query()->firstOrCreate(
-                ["userId" => $item["userId"]],
-                ["lastAccessAt" => $item["lastAccessAt"]],
-            );
+            \Amp\call(function () use ($item): void {
+                Player::query()->firstOrCreate(
+                    ["userId" => $item["userId"]],
+                    ["lastAccessAt" => $item["lastAccessAt"]],
+                );
+            });
         }
 
         return new LoadResult($totalBytesProcessed);

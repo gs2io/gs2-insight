@@ -431,6 +431,7 @@ return [
     "model.gcp.actions.load.Quest" => "GS2-Quest ログを読み込み中...",
     "model.gcp.actions.load.Inventory" => "GS2-Inventory ログを読み込み中...",
     "model.gcp.actions.load.Experience" => "GS2-Experience ログを読み込み中...",
+    "model.gcp.actions.load.Gateway" => "GS2-Gateway ログを読み込み中...",
     "model.gcp.actions.load.Money" => "GS2-Money ログを読み込み中...",
     "model.gcp.actions.load.Mission" => "GS2-Mission ログを読み込み中...",
     "model.gcp.actions.load.Stamina" => "GS2-Stamina ログを読み込み中...",

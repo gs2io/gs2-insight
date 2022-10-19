@@ -293,21 +293,25 @@ class GrnLoader {
     {
         $query = $client->query($sql);
         $query->allowLargeResults(true);
-        $items = $client->runQuery($query);
+            $items = $client->runQuery($query, [
+                'maxResults' => 1000,
+            ]);
 
         $totalBytesProcessed = $items->info()['totalBytesProcessed'];
 
         $grns = [];
         foreach ($items as $item) {
             if (isset($item["key"])) {
-                $grns[] = Grn::query()->updateOrCreate(
-                    ["grn" => "{$parent->grn}:{$modelName}:{$item["key"]}"],
-                    [
-                        "parent" => $parent->grn,
-                        "category" => $modelName,
-                        "key" => $item["key"],
-                    ],
-                );
+                \Amp\call(function () use ($modelName, $parent, $item, &$grns): void {
+                    $grns[] = Grn::query()->updateOrCreate(
+                        ["grn" => "{$parent->grn}:{$modelName}:{$item["key"]}"],
+                        [
+                            "parent" => $parent->grn,
+                            "category" => $modelName,
+                            "key" => $item["key"],
+                        ],
+                    );
+                });
             }
         }
         return new LoadGrnResult(

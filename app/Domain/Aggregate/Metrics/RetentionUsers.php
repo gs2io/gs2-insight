@@ -92,18 +92,22 @@ class RetentionUsers extends AbstractMetricsController
             )
         ");
         $query->allowLargeResults(true);
-        $items = $bigQuery->runQuery($query);
+        $items = $bigQuery->runQuery($query, [
+            'maxResults' => 1000,
+        ]);
 
         foreach ($items as $item) {
-            Metrics::query()->updateOrCreate(
-                ["metricsId" => 'retention_users:daily:'. $targetStartYmd. ':'. $targetEndYmd. ':'. $endDateYmd],
-                [
-                    "category" => 'retention_users:daily:'. $targetStartYmd,
-                    "key" => $targetEndYmd. ':'. $endDateYmd,
-                    "value" => $item["value"],
-                    "timestamp" => DateTime::createFromFormat('Y-m-d', $targetEndYmd),
-                ],
-            );
+            \Amp\call(function () use ($endDateYmd, $targetEndYmd, $targetStartYmd, $item): void {
+                Metrics::query()->updateOrCreate(
+                    ["metricsId" => 'retention_users:daily:'. $targetStartYmd. ':'. $targetEndYmd. ':'. $endDateYmd],
+                    [
+                        "category" => 'retention_users:daily:'. $targetStartYmd,
+                        "key" => $targetEndYmd. ':'. $endDateYmd,
+                        "value" => $item["value"],
+                        "timestamp" => DateTime::createFromFormat('Y-m-d', $targetEndYmd),
+                    ],
+                );
+            });
         }
     }
 

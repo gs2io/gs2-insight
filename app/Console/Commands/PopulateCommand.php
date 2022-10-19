@@ -43,13 +43,13 @@ class PopulateCommand extends Command
     {
         $begin = microtime(true);
 
-        ini_set("memory_limit", "4G");
+        ini_set("memory_limit", "16G");
 
         $gcp = (new GcpDomain())->model();
         if ($gcp != null) {
             $totalBytesProcessed = 0;
 
-            $currentStatus = "INIT";
+            $currentStatus = "Ranking";
             while ($currentStatus != null) {
                 printf("Fetching...  %s\n", $currentStatus);
                 $result = GcpController::loadImpl(
@@ -58,6 +58,7 @@ class PopulateCommand extends Command
                 );
                 $currentStatus = $result["nextStatus"]?->toString();
                 $totalBytesProcessed += $result["totalBytesProcessed"];
+                break;
             }
 
             $elapsed = microtime(true) - $begin;

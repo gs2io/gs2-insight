@@ -67,7 +67,6 @@ class GcpController extends Controller
         string|null $currentStatus,
         int $totalBytesProcessed,
     ): array {
-
         $currentStatus = $currentStatus ? LoadTarget::valueOf($currentStatus) : LoadTarget::Initialize;
         $nextStatus = LoadTarget::Done;
 

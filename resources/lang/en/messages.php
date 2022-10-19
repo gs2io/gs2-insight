@@ -439,6 +439,7 @@ return [
     "model.gcp.actions.load.Quest" => "Loading GS2-Quest Logs...",
     "model.gcp.actions.load.Inventory" => "Loading GS2-Inventory Logs...",
     "model.gcp.actions.load.Experience" => "Loading GS2-Experience Logs...",
+    "model.gcp.actions.load.Gateway" => "Loading GS2-Gateway Logs...",
     "model.gcp.actions.load.Money" => "Loading GS2-Money Logs...",
     "model.gcp.actions.load.Mission" => "Loading GS2-Mission Logs...",
     "model.gcp.actions.load.Stamina" => "Loading GS2-Stamina Logs...",

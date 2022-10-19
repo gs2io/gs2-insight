@@ -304,19 +304,23 @@ class GrnKeyLoader {
     {
         $query = $client->query($sql);
         $query->allowLargeResults(true);
-        $items = $client->runQuery($query);
+            $items = $client->runQuery($query, [
+                'maxResults' => 1000,
+            ]);
 
         $totalBytesProcessed = $items->info()['totalBytesProcessed'];
 
         $grnKeys = [];
         foreach ($items as $item) {
             if (isset($item["key"])) {
-                $grnKeys[] = GrnKey::query()->firstOrCreate([
-                    'keyId' => "{$parent->grn}:{$item["key"]}:{$modelName}:requestId:{$item['requestId']}",
-                    'grn' => "{$parent->grn}:{$item["key"]}",
-                    'category' => "{$modelName}",
-                    'requestId' => $item['requestId'],
-                ]);
+                \Amp\call(function () use ($modelName, $parent, $item, &$grnKeys): void {
+                    $grnKeys[] = GrnKey::query()->firstOrCreate([
+                        'keyId' => "{$parent->grn}:{$item["key"]}:{$modelName}:requestId:{$item['requestId']}",
+                        'grn' => "{$parent->grn}:{$item["key"]}",
+                        'category' => "{$modelName}",
+                        'requestId' => $item['requestId'],
+                    ]);
+                });
             }
         }
         return new LoadGrnKeyResult(

@@ -6,6 +6,7 @@ use App\Domain\Aggregate\Metrics\Common\Result\LoadMetricsResult;
 use App\Models\Metrics;
 use DateTime;
 use Google\Cloud\BigQuery\BigQueryClient;
+use Illuminate\Database\Eloquent\Model;
 
 class MetricsLoader {
 
@@ -268,30 +269,35 @@ class MetricsLoader {
         );
         $query = $client->query($sql);
         $query->allowLargeResults(true);
-        $items = $client->runQuery($query);
+            $items = $client->runQuery($query, [
+                'maxResults' => 1000,
+            ]);
 
         $totalBytesProcessed = $items->info()['totalBytesProcessed'];
 
         $metrics = [];
         foreach ($items as $item) {
-            $keys = implode(
-                ":",
-                array_map(
-                    function ($key) use ($item) {
-                        return $key . ':' . $item[$key];
-                    },
-                    $groupByFieldNames,
-                ),
-            );
-            $metrics[] = Metrics::query()->updateOrCreate(
-                ["metricsId" => "$service:$method:$category:$keys:{$item["date"]}"],
-                [
-                    "key" => "$service:$method:$category:$keys",
-                    "value" => $item["value"],
-                    "timestamp" => DateTime::createFromFormat('Y-m-d H:i:s', $item["date"]),
-                ],
-            );
+            \Amp\call(function () use ($category, $method, $service, $groupByFieldNames, $item, &$metrics): void {
+                $keys = implode(
+                    ":",
+                    array_map(
+                        function ($key) use ($item) {
+                            return $key . ':' . $item[$key];
+                        },
+                        $groupByFieldNames,
+                    ),
+                );
+                $metric[] = Metrics::query()->updateOrCreate(
+                    ["metricsId" => "$service:$method:$category:$keys:{$item["date"]}"],
+                    [
+                        "key" => "$service:$method:$category:$keys",
+                        "value" => $item["value"],
+                        "timestamp" => DateTime::createFromFormat('Y-m-d H:i:s', $item["date"]),
+                    ],
+                );
+            });
         }
+
         return new LoadMetricsResult(
             $metrics,
             $totalBytesProcessed,
@@ -329,30 +335,35 @@ class MetricsLoader {
         );
         $query = $client->query($sql);
         $query->allowLargeResults(true);
-        $items = $client->runQuery($query);
+            $items = $client->runQuery($query, [
+                'maxResults' => 1000,
+            ]);
 
         $totalBytesProcessed = $items->info()['totalBytesProcessed'];
 
         $metrics = [];
         foreach ($items as $item) {
-            $keys = implode(
-                ":",
-                array_map(
-                    function ($key) use ($item) {
-                        return $key . ':' . $item[$key];
-                    },
-                    $groupByFieldNames,
-                ),
-            );
-            $metrics[] = Metrics::query()->updateOrCreate(
-                ["metricsId" => "$service:$method:$category:$valueFieldName:$keys:{$item["date"]}"],
-                [
-                    "key" => "$service:$method:$category:$valueFieldName:$keys",
-                    "value" => $item["value"],
-                    "timestamp" => DateTime::createFromFormat('Y-m-d H:i:s', $item["date"]),
-                ],
-            );
+            \Amp\call(function () use ($valueFieldName, $category, $method, $service, $groupByFieldNames, $item, &$metrics): void {
+                $keys = implode(
+                    ":",
+                    array_map(
+                        function ($key) use ($item) {
+                            return $key . ':' . $item[$key];
+                        },
+                        $groupByFieldNames,
+                    ),
+                );
+                $metrics[] = Metrics::query()->updateOrCreate(
+                    ["metricsId" => "$service:$method:$category:$valueFieldName:$keys:{$item["date"]}"],
+                    [
+                        "key" => "$service:$method:$category:$valueFieldName:$keys",
+                        "value" => $item["value"],
+                        "timestamp" => DateTime::createFromFormat('Y-m-d H:i:s', $item["date"]),
+                    ],
+                );
+            });
         }
+
         return new LoadMetricsResult(
             $metrics,
             $totalBytesProcessed,
@@ -428,30 +439,35 @@ class MetricsLoader {
             ) . "
         ");
         $query->allowLargeResults(true);
-        $items = $client->runQuery($query);
+            $items = $client->runQuery($query, [
+                'maxResults' => 1000,
+            ]);
 
         $totalBytesProcessed = $items->info()['totalBytesProcessed'];
 
         $metrics = [];
         foreach ($items as $item) {
-            $keys = implode(
-                ":",
-                array_map(
-                    function ($key) use ($item) {
-                        return $key . ':' . $item[$key];
-                    },
-                    $groupByFieldNames,
-                ),
-            );
-            $metrics[] = Metrics::query()->updateOrCreate(
-                ["metricsId" => "$service:$method:$category:$keys:{$item["date"]}"],
-                [
-                    "key" => "$service:$method:$category:$keys",
-                    "value" => $item["value"],
-                    "timestamp" => DateTime::createFromFormat('Y-m-d H:i:s', $item["date"]),
-                ],
-            );
+            \Amp\call(function () use ($category, $method, $service, $groupByFieldNames, $item, &$metrics): void {
+                $keys = implode(
+                    ":",
+                    array_map(
+                        function ($key) use ($item) {
+                            return $key . ':' . $item[$key];
+                        },
+                        $groupByFieldNames,
+                    ),
+                );
+                $metrics[] = Metrics::query()->updateOrCreate(
+                    ["metricsId" => "$service:$method:$category:$keys:{$item["date"]}"],
+                    [
+                        "key" => "$service:$method:$category:$keys",
+                        "value" => $item["value"],
+                        "timestamp" => DateTime::createFromFormat('Y-m-d H:i:s', $item["date"]),
+                    ],
+                );
+            });
         }
+
         return new LoadMetricsResult(
             $metrics,
             $totalBytesProcessed,
@@ -489,30 +505,35 @@ class MetricsLoader {
         );
         $query = $client->query($sql);
         $query->allowLargeResults(true);
-        $items = $client->runQuery($query);
+            $items = $client->runQuery($query, [
+                'maxResults' => 1000,
+            ]);
 
         $totalBytesProcessed = $items->info()['totalBytesProcessed'];
 
         $metrics = [];
         foreach ($items as $item) {
-            $keys = implode(
-                ":",
-                array_map(
-                    function ($key) use ($item) {
-                        return $key . ':' . $item[$key];
-                    },
-                    $groupByFieldNames,
-                ),
-            );
-            $metrics[] = Metrics::query()->updateOrCreate(
-                ["metricsId" => "$service:$method:$category:$valueFieldName:$keys:{$item["value"]}:{$item["date"]}"],
-                [
-                    "key" => "$service:$method:$category:$valueFieldName:$keys:{$item["value"]}",
-                    "value" => $item["count"],
-                    "timestamp" => DateTime::createFromFormat('Y-m-d H:i:s', $item["date"]),
-                ],
-            );
+            \Amp\call(function () use ($valueFieldName, $category, $method, $service, $groupByFieldNames, $item, &$metrics): void {
+                $keys = implode(
+                    ":",
+                    array_map(
+                        function ($key) use ($item) {
+                            return $key . ':' . $item[$key];
+                        },
+                        $groupByFieldNames,
+                    ),
+                );
+                $metrics[] = Metrics::query()->updateOrCreate(
+                    ["metricsId" => "$service:$method:$category:$valueFieldName:$keys:{$item["value"]}:{$item["date"]}"],
+                    [
+                        "key" => "$service:$method:$category:$valueFieldName:$keys:{$item["value"]}",
+                        "value" => $item["count"],
+                        "timestamp" => DateTime::createFromFormat('Y-m-d H:i:s', $item["date"]),
+                    ],
+                );
+            });
         }
+
         return new LoadMetricsResult(
             $metrics,
             $totalBytesProcessed,

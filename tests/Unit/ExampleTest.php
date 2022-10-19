@@ -2,7 +2,11 @@
 
 namespace Tests\Unit;
 
-use PHPUnit\Framework\TestCase;
+use App\Domain\Aggregate\Timelines;
+use App\Domain\GcpDomain;
+use DateInterval;
+use DatePeriod;
+use Tests\TestCase;
 
 class ExampleTest extends TestCase
 {
@@ -13,6 +17,18 @@ class ExampleTest extends TestCase
      */
     public function test_example()
     {
-        $this->assertTrue(true);
+        $gcp = (new GcpDomain())->model();
+        $period = new DatePeriod(
+            $gcp->beginAt->setTimezone('UTC'),
+            DateInterval::createFromDateString("1 second"),
+            $gcp->endAt->setTimezone('UTC'),
+        );
+
+        $timelines = new Timelines(
+            $period,
+            $gcp->datasetName,
+            $gcp->credentials,
+        );
+        $timelines->load()->totalBytesProcessed;
     }
 }

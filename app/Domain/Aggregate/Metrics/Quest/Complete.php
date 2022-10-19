@@ -103,7 +103,9 @@ class Complete extends AbstractMetrics
         ";
         $query = $client->query($sql);
         $query->allowLargeResults(true);
-        $items = $client->runQuery($query);
+            $items = $client->runQuery($query, [
+                'maxResults' => 1000,
+            ]);
 
         $totalBytesProcessed = $items->info()['totalBytesProcessed'];
 

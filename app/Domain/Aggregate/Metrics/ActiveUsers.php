@@ -46,20 +46,24 @@ class ActiveUsers extends AbstractMetrics
         ";
         $query = $client->query($sql);
         $query->allowLargeResults(true);
-        $items = $client->runQuery($query);
+            $items = $client->runQuery($query, [
+                'maxResults' => 1000,
+            ]);
 
         $totalBytesProcessed = $items->info()['totalBytesProcessed'];
 
         $metrics = [];
         foreach ($items as $item) {
-            $metrics[] = Metrics::query()->updateOrCreate(
-                ["metricsId" => "general:uniquePlayer:count:hourly:{$item["date"]}"],
-                [
-                    "key" => "general:uniquePlayer:count:hourly",
-                    "value" => $item["value"],
-                    "timestamp" => DateTime::createFromFormat('Y-m-d H:i:s', $item["date"]),
-                ],
-            );
+            \Amp\call(function () use ($item, &$metrics): void {
+                $metrics[] = Metrics::query()->updateOrCreate(
+                    ["metricsId" => "general:uniquePlayer:count:hourly:{$item["date"]}"],
+                    [
+                        "key" => "general:uniquePlayer:count:hourly",
+                        "value" => $item["value"],
+                        "timestamp" => DateTime::createFromFormat('Y-m-d H:i:s', $item["date"]),
+                    ],
+                );
+            });
         }
         return new LoadResult(
             $totalBytesProcessed,
@@ -82,20 +86,24 @@ class ActiveUsers extends AbstractMetrics
         ";
         $query = $client->query($sql);
         $query->allowLargeResults(true);
-        $items = $client->runQuery($query);
+            $items = $client->runQuery($query, [
+                'maxResults' => 1000,
+            ]);
 
         $totalBytesProcessed = $items->info()['totalBytesProcessed'];
 
         $metrics = [];
         foreach ($items as $item) {
-            $metrics[] = Metrics::query()->updateOrCreate(
-                ["metricsId" => "general:uniquePlayer:count:daily:{$item["date"]}"],
-                [
-                    "key" => "general:uniquePlayer:count:daily",
-                    "value" => $item["value"],
-                    "timestamp" => DateTime::createFromFormat('Y-m-d H:i:s', $item["date"]),
-                ],
-            );
+            \Amp\call(function () use ($item, &$metrics): void {
+                $metrics[] = Metrics::query()->updateOrCreate(
+                    ["metricsId" => "general:uniquePlayer:count:daily:{$item["date"]}"],
+                    [
+                        "key" => "general:uniquePlayer:count:daily",
+                        "value" => $item["value"],
+                        "timestamp" => DateTime::createFromFormat('Y-m-d H:i:s', $item["date"]),
+                    ],
+                );
+            });
         }
         return new LoadResult(
             $totalBytesProcessed,
@@ -118,20 +126,24 @@ class ActiveUsers extends AbstractMetrics
         ";
         $query = $client->query($sql);
         $query->allowLargeResults(true);
-        $items = $client->runQuery($query);
+            $items = $client->runQuery($query, [
+                'maxResults' => 1000,
+            ]);
 
         $totalBytesProcessed = $items->info()['totalBytesProcessed'];
 
         $metrics = [];
         foreach ($items as $item) {
-            $metrics[] = Metrics::query()->updateOrCreate(
-                ["metricsId" => "general:uniquePlayer:count:monthly:{$item["date"]}"],
-                [
-                    "key" => "general:uniquePlayer:count:monthly",
-                    "value" => $item["value"],
-                    "timestamp" => DateTime::createFromFormat('Y-m-d H:i:s', $item["date"]),
-                ],
-            );
+            \Amp\call(function () use ($item, &$metrics): void {
+                $metrics[] = Metrics::query()->updateOrCreate(
+                    ["metricsId" => "general:uniquePlayer:count:monthly:{$item["date"]}"],
+                    [
+                        "key" => "general:uniquePlayer:count:monthly",
+                        "value" => $item["value"],
+                        "timestamp" => DateTime::createFromFormat('Y-m-d H:i:s', $item["date"]),
+                    ],
+                );
+            });
         }
         return new LoadResult(
             $totalBytesProcessed,
