@@ -3,6 +3,7 @@
 namespace App\Domain\Aggregate;
 
 use App\Domain\Aggregate\Metrics\Common\Result\LoadResult;
+use App\Models\LoadStatus;
 use App\Models\Player;
 use App\Models\Timeline;
 use DatePeriod;
@@ -26,7 +27,19 @@ class Players extends AbstractAggregate
 
     public function load(): LoadResult
     {
+        $totalSteps = 1;
+        $step = 0;
         $totalBytesProcessed = 0;
+
+        $workingStatus = LoadStatus::query()->find("global:player");
+        if ($workingStatus == null) {
+            $workingStatus = LoadStatus::query()->create([
+                "scope" => "global:player",
+                "working" => "userId",
+                "progress" => 0.0,
+                "totalBytesProcessed" => 0,
+            ]);
+        }
 
         $items = Timeline::query()
             ->select(DB::raw('userId, MAX(timestamp) As timestamp'))
@@ -58,16 +71,28 @@ class Players extends AbstractAggregate
             'maxResults' => 1000,
         ]);
 
-        $totalBytesProcessed += $items->info()['totalBytesProcessed'];
+        $rows = 0;
+        $totalRows = $items->info()["totalRows"];
 
         foreach ($items as $item) {
-            \Amp\call(function () use ($item): void {
-                Player::query()->firstOrCreate(
-                    ["userId" => $item["userId"]],
-                    ["lastAccessAt" => $item["lastAccessAt"]],
-                );
-            });
+            $rows++;
+            if ($rows % 1000 == 0) {
+                $workingStatus->update([
+                    "progress" => $step / $totalSteps + (1 / $totalSteps) * ($rows / $totalRows),
+                ]);
+            }
+
+            Player::query()->firstOrCreate(
+                ["userId" => $item["userId"]],
+                ["lastAccessAt" => $item["lastAccessAt"]],
+            );
         }
+
+        $totalBytesProcessed += $items->info()['totalBytesProcessed'];
+        $step++;
+        $workingStatus->update([
+            "progress" => $step / $totalSteps,
+        ]);
 
         return new LoadResult($totalBytesProcessed);
     }

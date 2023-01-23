@@ -49,17 +49,7 @@ class PopulateCommand extends Command
         if ($gcp != null) {
             $totalBytesProcessed = 0;
 
-            $currentStatus = "Ranking";
-            while ($currentStatus != null) {
-                printf("Fetching...  %s\n", $currentStatus);
-                $result = GcpController::loadImpl(
-                    $currentStatus,
-                    $totalBytesProcessed,
-                );
-                $currentStatus = $result["nextStatus"]?->toString();
-                $totalBytesProcessed += $result["totalBytesProcessed"];
-                break;
-            }
+            $result = GcpController::load();
 
             $elapsed = microtime(true) - $begin;
             printf("Processing time:  %.3f sec\n", $elapsed);

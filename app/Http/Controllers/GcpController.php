@@ -10,6 +10,9 @@ use App\Domain\Aggregate\Timelines;
 use App\Domain\GcpDomain;
 use App\Domain\PlayerDomain;
 use App\Http\Controllers\Enums\LoadTarget;
+use App\Jobs\LoadDetailJob;
+use App\Jobs\LoadJob;
+use App\Models\LoadStatus;
 use DateInterval;
 use DatePeriod;
 use DateTime;
@@ -17,6 +20,7 @@ use DateTimeZone;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 
 class GcpController extends Controller
 {
@@ -63,555 +67,193 @@ class GcpController extends Controller
         return redirect()->to("/gcp/load");
     }
 
-    public static function loadImpl(
-        string|null $currentStatus,
-        int $totalBytesProcessed,
-    ): array {
-        $currentStatus = $currentStatus ? LoadTarget::valueOf($currentStatus) : LoadTarget::Initialize;
-        $nextStatus = LoadTarget::Done;
-
-        $gcp = (new GcpDomain())->model();
-        $period = new DatePeriod(
-            $gcp->beginAt->setTimezone('UTC'),
-            DateInterval::createFromDateString("1 second"),
-            $gcp->endAt->setTimezone('UTC'),
-        );
-
-        switch ($currentStatus) {
-            case LoadTarget::Initialize;
-                $nextStatus = LoadTarget::Timeline;
-                break;
-            case LoadTarget::Timeline;
-                $timelines = new Timelines(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Player;
-                break;
-            case LoadTarget::Player;
-                $players = new Players(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $players->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::ActiveUser;
-                break;
-            case LoadTarget::ActiveUser;
-                $timelines = new ActiveUsers(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Account;
-                break;
-
-            case LoadTarget::Account;
-                $timelines = new \App\Domain\Aggregate\Metrics\Account\Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Chat;
-                break;
-            case LoadTarget::Chat;
-                $timelines = new \App\Domain\Aggregate\Metrics\Chat\Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Datastore;
-                break;
-            case LoadTarget::Datastore;
-                $timelines = new \App\Domain\Aggregate\Metrics\Datastore\Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Dictionary;
-                break;
-            case LoadTarget::Dictionary;
-                $timelines = new \App\Domain\Aggregate\Metrics\Dictionary\Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Exchange;
-                break;
-            case LoadTarget::Exchange;
-                $timelines = new \App\Domain\Aggregate\Metrics\Exchange\Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Experience;
-                break;
-            case LoadTarget::Experience;
-                $timelines = new \App\Domain\Aggregate\Metrics\Experience\Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Friend;
-                break;
-            case LoadTarget::Friend;
-                $timelines = new \App\Domain\Aggregate\Metrics\Friend\Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Gateway;
-                break;
-            case LoadTarget::Gateway;
-                $timelines = new \App\Domain\Aggregate\Metrics\Gateway\Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Inbox;
-                break;
-            case LoadTarget::Inbox;
-                $timelines = new \App\Domain\Aggregate\Metrics\Inbox\Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Inventory;
-                break;
-            case LoadTarget::Inventory;
-                $timelines = new \App\Domain\Aggregate\Metrics\Inventory\Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::JobQueue;
-                break;
-            case LoadTarget::JobQueue;
-                $timelines = new \App\Domain\Aggregate\Metrics\JobQueue\Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Limit;
-                break;
-            case LoadTarget::Limit;
-                $timelines = new \App\Domain\Aggregate\Metrics\Limit\Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Lottery;
-                break;
-            case LoadTarget::Lottery;
-                $timelines = new \App\Domain\Aggregate\Metrics\Lottery\Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Matchmaking;
-                break;
-            case LoadTarget::Matchmaking;
-                $timelines = new \App\Domain\Aggregate\Metrics\Matchmaking\Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Mission;
-                break;
-            case LoadTarget::Mission;
-                $timelines = new \App\Domain\Aggregate\Metrics\Mission\Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Money;
-                break;
-            case LoadTarget::Money;
-                $timelines = new \App\Domain\Aggregate\Metrics\Money\Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Quest;
-                break;
-            case LoadTarget::Quest;
-                $timelines = new \App\Domain\Aggregate\Metrics\Quest\Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Ranking;
-                break;
-            case LoadTarget::Ranking;
-                $timelines = new \App\Domain\Aggregate\Metrics\Ranking\Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Realtime;
-                break;
-            case LoadTarget::Realtime;
-                $timelines = new \App\Domain\Aggregate\Metrics\Realtime\Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Schedule;
-                break;
-            case LoadTarget::Schedule;
-                $timelines = new \App\Domain\Aggregate\Metrics\Schedule\Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Script;
-                break;
-            case LoadTarget::Script;
-                $timelines = new \App\Domain\Aggregate\Metrics\Script\Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Showcase;
-                break;
-            case LoadTarget::Showcase;
-                $timelines = new \App\Domain\Aggregate\Metrics\Showcase\Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Stamina;
-                break;
-            case LoadTarget::Stamina;
-                $timelines = new \App\Domain\Aggregate\Metrics\Stamina\Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Version;
-                break;
-            case LoadTarget::Version;
-                $timelines = new Index(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load()->totalBytesProcessed;
-                $nextStatus = LoadTarget::Done;
-                break;
-
-            case LoadTarget::Done;
-                $nextStatus = null;
-                break;
-        }
-        return [
-            "currentStatus" => $currentStatus,
-            "nextStatus" => $nextStatus,
-            "totalBytesProcessed" => $totalBytesProcessed,
-        ];
-    }
-
-
-    public static function load(Request $request): View
+    public static function load(): \Illuminate\Contracts\Foundation\Application|RedirectResponse|\Illuminate\Routing\Redirector|View
     {
-        $result = self::loadImpl(
-            $request->status,
-            $request->totalBytesProcessed ?? 0
-        );
-        $currentStatus = $result["currentStatus"];
-        $totalBytesProcessed = $result["totalBytesProcessed"];
-        $nextStatus = $result["nextStatus"];
+        $globalStatus = LoadStatus::query()->find("global");
+        if ($globalStatus == null) {
+            $globalStatus = LoadStatus::query()->create([
+                "scope" => "global",
+                "working" => "init",
+                "progress" => 0.0,
+                "totalBytesProcessed" => 0,
+            ]);
+        }
+        if ($globalStatus["working"] == "init" && $globalStatus["progress"] == 0.0) {
+            $statuses = LoadStatus::query()->where("scope", "like", "global:%");
+            foreach ($statuses as $v) {
+                $v->delete();
+            }
+
+            LoadJob::dispatch(LoadTarget::Player);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Timeline);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Account);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Chat);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Datastore);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Dictionary);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Exchange);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Experience);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Friend);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Gateway);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Inbox);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Inventory);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::JobQueue);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Limit);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Lottery);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Matchmaking);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Mission);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Money);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Quest);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Ranking);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Realtime);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Schedule);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Script);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Showcase);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Stamina);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadJob::dispatch(LoadTarget::Version);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+
+            $globalStatus->update([
+                "progress" => 0.1,
+            ]);
+        }
+
+        $workingStatus = LoadStatus::query()->find("global:player");
+        if ($workingStatus == null) {
+            $workingStatus = LoadStatus::query()->create([
+                "scope" => "global:player",
+                "working" => "init",
+                "progress" => 0.0,
+                "totalBytesProcessed" => 0,
+            ]);
+        }
+
+        if ($workingStatus["progress"] == 1) {
+            return redirect("/players");
+        }
 
         return view('gcp/load')
             ->with("gcp", (new GcpDomain())->model())
-            ->with("currentStatus", $currentStatus)
-            ->with("totalBytesProcessed", $totalBytesProcessed)
-            ->with("nextUrl", $nextStatus == null ? "/" : "/gcp/load?status={$nextStatus->toString()}&totalBytesProcessed={$totalBytesProcessed}");
+            ->with("globalStatus", $globalStatus)
+            ->with("workingStatus", $workingStatus);
     }
 
-    public static function loadDetail(Request $request): View
+    public static function loadDetail(Request $request): \Illuminate\Contracts\Foundation\Application|RedirectResponse|\Illuminate\Routing\Redirector|View
     {
-        $totalBytesProcessed = $request->totalBytesProcessed ?? 0;
-
-        $userId = $request->userId;
-
-        $currentStatus = $request->status ? LoadTarget::valueOf($request->status) : LoadTarget::Initialize;
-        $nextStatus = LoadTarget::Done;
-
-        $gcp = (new GcpDomain())->model();
-        $period = new DatePeriod(
-            $gcp->beginAt->setTimezone('UTC'),
-            DateInterval::createFromDateString("1 second"),
-            $gcp->endAt->setTimezone('UTC'),
-        );
-
-        switch ($currentStatus) {
-            case LoadTarget::Initialize;
-                $nextStatus = LoadTarget::Timeline;
-                break;
-            case LoadTarget::Timeline;
-                $timelines = new Timelines(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->loadDetail($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Account;
-                break;
-
-            case LoadTarget::Account;
-                $timelines = new \App\Domain\Aggregate\Metrics\Account\GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Chat;
-                break;
-            case LoadTarget::Chat;
-                $timelines = new \App\Domain\Aggregate\Metrics\Chat\GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Datastore;
-                break;
-            case LoadTarget::Datastore;
-                $timelines = new \App\Domain\Aggregate\Metrics\Datastore\GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Dictionary;
-                break;
-            case LoadTarget::Dictionary;
-                $timelines = new \App\Domain\Aggregate\Metrics\Dictionary\GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Exchange;
-                break;
-            case LoadTarget::Exchange;
-                $timelines = new \App\Domain\Aggregate\Metrics\Exchange\GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Experience;
-                break;
-            case LoadTarget::Experience;
-                $timelines = new \App\Domain\Aggregate\Metrics\Experience\GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Friend;
-                break;
-            case LoadTarget::Friend;
-                $timelines = new \App\Domain\Aggregate\Metrics\Friend\GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Gateway;
-                break;
-            case LoadTarget::Gateway;
-                $timelines = new \App\Domain\Aggregate\Metrics\Gateway\GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Inbox;
-                break;
-            case LoadTarget::Inbox;
-                $timelines = new \App\Domain\Aggregate\Metrics\Inbox\GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Inventory;
-                break;
-            case LoadTarget::Inventory;
-                $timelines = new \App\Domain\Aggregate\Metrics\Inventory\GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::JobQueue;
-                break;
-            case LoadTarget::JobQueue;
-                $timelines = new \App\Domain\Aggregate\Metrics\JobQueue\GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Limit;
-                break;
-            case LoadTarget::Limit;
-                $timelines = new \App\Domain\Aggregate\Metrics\Limit\GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Lottery;
-                break;
-            case LoadTarget::Lottery;
-                $timelines = new \App\Domain\Aggregate\Metrics\Lottery\GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Matchmaking;
-                break;
-            case LoadTarget::Matchmaking;
-                $timelines = new \App\Domain\Aggregate\Metrics\Matchmaking\GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Mission;
-                break;
-            case LoadTarget::Mission;
-                $timelines = new \App\Domain\Aggregate\Metrics\Mission\GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Money;
-                break;
-            case LoadTarget::Money;
-                $timelines = new \App\Domain\Aggregate\Metrics\Money\GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Quest;
-                break;
-            case LoadTarget::Quest;
-                $timelines = new \App\Domain\Aggregate\Metrics\Quest\GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Ranking;
-                break;
-            case LoadTarget::Ranking;
-                $timelines = new \App\Domain\Aggregate\Metrics\Ranking\GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Realtime;
-                break;
-            case LoadTarget::Realtime;
-                $timelines = new \App\Domain\Aggregate\Metrics\Realtime\GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Schedule;
-                break;
-            case LoadTarget::Schedule;
-                $timelines = new \App\Domain\Aggregate\Metrics\Schedule\GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Script;
-                break;
-            case LoadTarget::Script;
-                $timelines = new \App\Domain\Aggregate\Metrics\Script\GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Showcase;
-                break;
-            case LoadTarget::Showcase;
-                $timelines = new \App\Domain\Aggregate\Metrics\Showcase\GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Stamina;
-                break;
-            case LoadTarget::Stamina;
-                $timelines = new \App\Domain\Aggregate\Metrics\Stamina\GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Version;
-                break;
-            case LoadTarget::Version;
-                $timelines = new GrnKey(
-                    $period,
-                    $gcp->datasetName,
-                    $gcp->credentials,
-                );
-                $totalBytesProcessed += $timelines->load($userId)->totalBytesProcessed;
-                $nextStatus = LoadTarget::Done;
-                break;
-
-            case LoadTarget::Done;
-                $player = (new PlayerDomain($userId))->model();
-                $player->fetched($gcp->beginAt, $gcp->endAt);
-                $nextStatus = null;
-                break;
+        $globalStatus = LoadStatus::query()->find($request->userId);
+        if ($globalStatus == null) {
+            $globalStatus = LoadStatus::query()->create([
+                "scope" => $request->userId,
+                "working" => "init",
+                "progress" => 0.0,
+                "totalBytesProcessed" => 0,
+            ]);
         }
+        if ($globalStatus["working"] == "init" && $globalStatus["progress"] == 0.0) {
+            $statuses = LoadStatus::query()->where("scope", "like", "$request->userId:%");
+            foreach ($statuses as $v) {
+                $v->delete();
+            }
+
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Player);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Timeline);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Account);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Chat);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Datastore);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Dictionary);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Exchange);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Experience);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Friend);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Gateway);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Inbox);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Inventory);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::JobQueue);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Limit);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Lottery);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Matchmaking);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Mission);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Money);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Quest);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Ranking);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Realtime);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Schedule);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Script);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Showcase);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Stamina);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+            LoadDetailJob::dispatch($request->userId, LoadTarget::Version);
+            exec("cd /var/www/html && php artisan queue:work --once --timeout=3600 > /dev/null &");
+
+            $globalStatus->update([
+                "progress" => 0.1,
+            ]);
+        }
+
+        $workingStatus = LoadStatus::query()->find("$request->userId:timeline");
+        if ($workingStatus == null) {
+            $workingStatus = LoadStatus::query()->create([
+                "scope" => "$request->userId:timeline",
+                "working" => "init",
+                "progress" => 0.0,
+                "totalBytesProcessed" => 0,
+            ]);
+        }
+
+        if ($workingStatus["progress"] == 1) {
+            return redirect("/players/$request->userId");
+        }
+
         return view('gcp/load_detail')
             ->with("gcp", (new GcpDomain())->model())
-            ->with("currentStatus", $currentStatus)
-            ->with("totalBytesProcessed", $totalBytesProcessed)
-            ->with("nextUrl", $nextStatus == null ? "/players/$userId" : "/gcp/load/$userId?status={$nextStatus->toString()}&totalBytesProcessed={$totalBytesProcessed}");
+            ->with("globalStatus", $globalStatus)
+            ->with("workingStatus", $workingStatus);
     }
 }
