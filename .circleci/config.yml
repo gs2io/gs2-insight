@@ -52,6 +52,54 @@ jobs:
           repo: gs2-insight
           setup-remote-docker: true
           tag: latest
+  deploy_ap_northeast_2_dev:
+    docker:
+      - image: cimg/python:3.7
+        environment:
+          AWS_REGION: ap-northeast-2
+          AWS_ECR_REGISTRY_ID: "193652665524"
+    steps:
+      - checkout
+      - aws-ecr/build-and-push-image:
+          repo: gs2-insight
+          setup-remote-docker: true
+          tag: latest
+  deploy_ap_south_1_dev:
+    docker:
+      - image: cimg/python:3.7
+        environment:
+          AWS_REGION: ap-south-1
+          AWS_ECR_REGISTRY_ID: "193652665524"
+    steps:
+      - checkout
+      - aws-ecr/build-and-push-image:
+          repo: gs2-insight
+          setup-remote-docker: true
+          tag: latest
+  deploy_us_west_2_dev:
+    docker:
+      - image: cimg/python:3.7
+        environment:
+          AWS_REGION: us-west-2
+          AWS_ECR_REGISTRY_ID: "193652665524"
+    steps:
+      - checkout
+      - aws-ecr/build-and-push-image:
+          repo: gs2-insight
+          setup-remote-docker: true
+          tag: latest
+  deploy_eu_central_1_dev:
+    docker:
+      - image: cimg/python:3.7
+        environment:
+          AWS_REGION: eu-central-1
+          AWS_ECR_REGISTRY_ID: "193652665524"
+    steps:
+      - checkout
+      - aws-ecr/build-and-push-image:
+          repo: gs2-insight
+          setup-remote-docker: true
+          tag: latest
 
   deploy_ap_northeast_1_live:
     docker:
@@ -101,6 +149,54 @@ jobs:
           repo: gs2-insight
           setup-remote-docker: true
           tag: latest
+  deploy_ap_northeast_2_live:
+    docker:
+      - image: cimg/python:3.7
+        environment:
+          AWS_REGION: ap-northeast-2
+          AWS_ECR_REGISTRY_ID: "258965805804"
+    steps:
+      - checkout
+      - aws-ecr/build-and-push-image:
+          repo: gs2-insight
+          setup-remote-docker: true
+          tag: latest
+  deploy_ap_south_1_live:
+    docker:
+      - image: cimg/python:3.7
+        environment:
+          AWS_REGION: ap-south-1
+          AWS_ECR_REGISTRY_ID: "258965805804"
+    steps:
+      - checkout
+      - aws-ecr/build-and-push-image:
+          repo: gs2-insight
+          setup-remote-docker: true
+          tag: latest
+  deploy_us_west_2_live:
+    docker:
+      - image: cimg/python:3.7
+        environment:
+          AWS_REGION: us-west-2
+          AWS_ECR_REGISTRY_ID: "258965805804"
+    steps:
+      - checkout
+      - aws-ecr/build-and-push-image:
+          repo: gs2-insight
+          setup-remote-docker: true
+          tag: latest
+  deploy_eu_central_1_live:
+    docker:
+      - image: cimg/python:3.7
+        environment:
+          AWS_REGION: eu-central-1
+          AWS_ECR_REGISTRY_ID: "258965805804"
+    steps:
+      - checkout
+      - aws-ecr/build-and-push-image:
+          repo: gs2-insight
+          setup-remote-docker: true
+          tag: latest
 
 workflows:
   build-and-deploy:
@@ -129,6 +225,30 @@ workflows:
             branches:
               only:
                 - main
+      - deploy_ap_northeast_2_dev:
+          context: EcrPushDev
+          filters:
+            branches:
+              only:
+                - main
+      - deploy_ap_south_1_dev:
+          context: EcrPushDev
+          filters:
+            branches:
+              only:
+                - main
+      - deploy_us_west_2_dev:
+          context: EcrPushDev
+          filters:
+            branches:
+              only:
+                - main
+      - deploy_eu_central_1_dev:
+          context: EcrPushDev
+          filters:
+            branches:
+              only:
+                - main
 
       - deploy_ap_northeast_1_live:
           context: EcrPushLive
@@ -149,6 +269,30 @@ workflows:
               only:
                 - main
       - deploy_ap_southeast_1_live:
+          context: EcrPushLive
+          filters:
+            branches:
+              only:
+                - main
+      - deploy_ap_northeast_2_live:
+          context: EcrPushLive
+          filters:
+            branches:
+              only:
+                - main
+      - deploy_ap_south_1_live:
+          context: EcrPushLive
+          filters:
+            branches:
+              only:
+                - main
+      - deploy_us_west_2_live:
+          context: EcrPushLive
+          filters:
+            branches:
+              only:
+                - main
+      - deploy_eu_central_1_live:
           context: EcrPushLive
           filters:
             branches:
