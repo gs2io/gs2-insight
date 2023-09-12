@@ -153,6 +153,9 @@ class GcpController extends Controller
         }
 
         if ($workingStatus["progress"] == 1) {
+            // status clear
+            LoadStatus::where("scope", "global")->update(["progress" => 0.0]);
+            LoadStatus::where("scope", "global:player")->update(["progress" => 0.0]);
             return redirect("/players");
         }
 
