@@ -203,7 +203,7 @@ jobs:
           tag: latest
 
 workflows:
-  build-and-deploy:
+  build_and_push_image:
     jobs:
       - deploy_ap_northeast_1_dev:
           context: EcrPushDev
