@@ -20,7 +20,6 @@ jobs:
       - checkout
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
-          setup-remote-docker: true
           auth:
             - aws-cli/setup: {}
           tag: latest
@@ -34,7 +33,6 @@ jobs:
       - checkout
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
-          setup-remote-docker: true
           auth:
             - aws-cli/setup: {}
           tag: latest
@@ -48,7 +46,6 @@ jobs:
       - checkout
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
-          setup-remote-docker: true
           auth:
             - aws-cli/setup: {}
           tag: latest
@@ -62,7 +59,6 @@ jobs:
       - checkout
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
-          setup-remote-docker: true
           auth:
             - aws-cli/setup: {}
           tag: latest
@@ -76,7 +72,6 @@ jobs:
       - checkout
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
-          setup-remote-docker: true
           auth:
             - aws-cli/setup: {}
           tag: latest
@@ -90,7 +85,6 @@ jobs:
       - checkout
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
-          setup-remote-docker: true
           auth:
             - aws-cli/setup: {}
           tag: latest
@@ -104,7 +98,6 @@ jobs:
       - checkout
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
-          setup-remote-docker: true
           auth:
             - aws-cli/setup: {}
           tag: latest
@@ -118,7 +111,6 @@ jobs:
       - checkout
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
-          setup-remote-docker: true
           auth:
             - aws-cli/setup: {}
           tag: latest
@@ -132,7 +124,6 @@ jobs:
       - checkout
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
-          setup-remote-docker: true
           auth:
             - aws-cli/setup: {}
           tag: latest
@@ -146,7 +137,6 @@ jobs:
       - checkout
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
-          setup-remote-docker: true
           auth:
             - aws-cli/setup: {}
           tag: latest
@@ -160,7 +150,6 @@ jobs:
       - checkout
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
-          setup-remote-docker: true
           auth:
             - aws-cli/setup: {}
           tag: latest
@@ -174,7 +163,6 @@ jobs:
       - checkout
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
-          setup-remote-docker: true
           auth:
             - aws-cli/setup: {}
           tag: latest
@@ -188,7 +176,6 @@ jobs:
       - checkout
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
-          setup-remote-docker: true
           auth:
             - aws-cli/setup: {}
           tag: latest
@@ -202,7 +189,6 @@ jobs:
       - checkout
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
-          setup-remote-docker: true
           auth:
             - aws-cli/setup: {}
           tag: latest
@@ -216,7 +202,6 @@ jobs:
       - checkout
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
-          setup-remote-docker: true
           auth:
             - aws-cli/setup: {}
           tag: latest
@@ -230,7 +215,6 @@ jobs:
       - checkout
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
-          setup-remote-docker: true
           auth:
             - aws-cli/setup: {}
           tag: latest
