@@ -298,3 +298,4 @@ workflows:
             branches:
               only:
                 - main
+  version: 2
