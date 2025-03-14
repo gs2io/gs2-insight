@@ -31,4 +31,7 @@ COPY ./docker/run.sh /tmp
 COPY ./docker/wait-for-it.sh /tmp
 COPY . /var/www/html
 
+RUN chmod +x /tmp/run.sh
+RUN chmod +x /tmp/wait-for-it.sh
+
 ENTRYPOINT ["/tmp/run.sh"]

@@ -7,7 +7,7 @@ services:
             - "80:80"
         volumes:
             - .:/var/www/html
-        entrypoint: ["/tmp/wait-for-it.sh", "database:3306", "--", "/tmp/run.sh"]
+        entrypoint: ["bash", "/tmp/wait-for-it.sh", "database:3306", "--", "/tmp/run.sh"]
     database:
         image: mariadb:10.3.32
         environment:
