@@ -17,7 +17,7 @@ jobs:
       AWS_ECR_REGISTRY_ID: "193652665524"
     steps:
       - checkout
-      - aws-ecr/build-and-push-image:
+      - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
           tag: latest
@@ -29,7 +29,7 @@ jobs:
       AWS_ECR_REGISTRY_ID: "193652665524"
     steps:
       - checkout
-      - aws-ecr/build-and-push-image:
+      - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
           tag: latest
@@ -41,7 +41,7 @@ jobs:
       AWS_ECR_REGISTRY_ID: "193652665524"
     steps:
       - checkout
-      - aws-ecr/build-and-push-image:
+      - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
           tag: latest
@@ -53,7 +53,7 @@ jobs:
       AWS_ECR_REGISTRY_ID: "193652665524"
     steps:
       - checkout
-      - aws-ecr/build-and-push-image:
+      - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
           tag: latest
@@ -65,7 +65,7 @@ jobs:
       AWS_ECR_REGISTRY_ID: "193652665524"
     steps:
       - checkout
-      - aws-ecr/build-and-push-image:
+      - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
           tag: latest
@@ -77,7 +77,7 @@ jobs:
       AWS_ECR_REGISTRY_ID: "193652665524"
     steps:
       - checkout
-      - aws-ecr/build-and-push-image:
+      - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
           tag: latest
@@ -89,7 +89,7 @@ jobs:
       AWS_ECR_REGISTRY_ID: "193652665524"
     steps:
       - checkout
-      - aws-ecr/build-and-push-image:
+      - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
           tag: latest
@@ -101,7 +101,7 @@ jobs:
       AWS_ECR_REGISTRY_ID: "193652665524"
     steps:
       - checkout
-      - aws-ecr/build-and-push-image:
+      - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
           tag: latest
@@ -113,7 +113,7 @@ jobs:
       AWS_ECR_REGISTRY_ID: "258965805804"
     steps:
       - checkout
-      - aws-ecr/build-and-push-image:
+      - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
           tag: latest
@@ -125,7 +125,7 @@ jobs:
       AWS_ECR_REGISTRY_ID: "258965805804"
     steps:
       - checkout
-      - aws-ecr/build-and-push-image:
+      - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
           tag: latest
@@ -137,7 +137,7 @@ jobs:
       AWS_ECR_REGISTRY_ID: "258965805804"
     steps:
       - checkout
-      - aws-ecr/build-and-push-image:
+      - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
           tag: latest
@@ -149,7 +149,7 @@ jobs:
       AWS_ECR_REGISTRY_ID: "258965805804"
     steps:
       - checkout
-      - aws-ecr/build-and-push-image:
+      - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
           tag: latest
@@ -161,7 +161,7 @@ jobs:
       AWS_ECR_REGISTRY_ID: "258965805804"
     steps:
       - checkout
-      - aws-ecr/build-and-push-image:
+      - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
           tag: latest
@@ -173,7 +173,7 @@ jobs:
       AWS_ECR_REGISTRY_ID: "258965805804"
     steps:
       - checkout
-      - aws-ecr/build-and-push-image:
+      - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
           tag: latest
@@ -185,7 +185,7 @@ jobs:
       AWS_ECR_REGISTRY_ID: "258965805804"
     steps:
       - checkout
-      - aws-ecr/build-and-push-image:
+      - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
           tag: latest
@@ -197,13 +197,13 @@ jobs:
       AWS_ECR_REGISTRY_ID: "258965805804"
     steps:
       - checkout
-      - aws-ecr/build-and-push-image:
+      - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
           tag: latest
 
 workflows:
-  build-and-push-image-with-container-registry-login:
+  build-and-deploy:
     jobs:
       - deploy_ap_northeast_1_dev:
           context: EcrPushDev
