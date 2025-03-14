@@ -13,12 +13,11 @@ executors:
 jobs:
   deploy_ap_northeast_1_dev:
     executor: python_default
-    environment:
-      AWS_REGION: ap-northeast-1
-      AWS_ECR_REGISTRY_ID: "193652665524"
     steps:
       - checkout
       - aws-ecr/build_and_push_image:
+          account_id: "193652665524"
+          region: ap-northeast-1
           repo: gs2-insight
           auth:
             - aws-cli/setup: {}
@@ -26,12 +25,11 @@ jobs:
 
   deploy_us_east_1_dev:
     executor: python_default
-    environment:
-      AWS_REGION: us-east-1
-      AWS_ECR_REGISTRY_ID: "193652665524"
     steps:
       - checkout
       - aws-ecr/build_and_push_image:
+          account_id: "193652665524"
+          region: us-east-1
           repo: gs2-insight
           auth:
             - aws-cli/setup: {}
@@ -39,12 +37,11 @@ jobs:
 
   deploy_eu_west_1_dev:
     executor: python_default
-    environment:
-      AWS_REGION: eu-west-1
-      AWS_ECR_REGISTRY_ID: "193652665524"
     steps:
       - checkout
       - aws-ecr/build_and_push_image:
+          account_id: "193652665524"
+          region: eu-west-1
           repo: gs2-insight
           auth:
             - aws-cli/setup: {}
@@ -52,12 +49,11 @@ jobs:
 
   deploy_ap_southeast_1_dev:
     executor: python_default
-    environment:
-      AWS_REGION: ap-southeast-1
-      AWS_ECR_REGISTRY_ID: "193652665524"
     steps:
       - checkout
       - aws-ecr/build_and_push_image:
+          account_id: "193652665524"
+          region: ap-southeast-1
           repo: gs2-insight
           auth:
             - aws-cli/setup: {}
@@ -65,12 +61,11 @@ jobs:
 
   deploy_ap_northeast_2_dev:
     executor: python_default
-    environment:
-      AWS_REGION: ap-northeast-2
-      AWS_ECR_REGISTRY_ID: "193652665524"
     steps:
       - checkout
       - aws-ecr/build_and_push_image:
+          account_id: "193652665524"
+          region: ap-northeast-2
           repo: gs2-insight
           auth:
             - aws-cli/setup: {}
@@ -78,12 +73,11 @@ jobs:
 
   deploy_ap_south_1_dev:
     executor: python_default
-    environment:
-      AWS_REGION: ap-south-1
-      AWS_ECR_REGISTRY_ID: "193652665524"
     steps:
       - checkout
       - aws-ecr/build_and_push_image:
+          account_id: "193652665524"
+          region: ap-south-1
           repo: gs2-insight
           auth:
             - aws-cli/setup: {}
@@ -91,12 +85,11 @@ jobs:
 
   deploy_us_west_2_dev:
     executor: python_default
-    environment:
-      AWS_REGION: us-west-2
-      AWS_ECR_REGISTRY_ID: "193652665524"
     steps:
       - checkout
       - aws-ecr/build_and_push_image:
+          account_id: "193652665524"
+          region: us-west-2
           repo: gs2-insight
           auth:
             - aws-cli/setup: {}
@@ -104,12 +97,11 @@ jobs:
 
   deploy_eu_central_1_dev:
     executor: python_default
-    environment:
-      AWS_REGION: eu-central-1
-      AWS_ECR_REGISTRY_ID: "193652665524"
     steps:
       - checkout
       - aws-ecr/build_and_push_image:
+          account_id: "193652665524"
+          region: eu-central-1
           repo: gs2-insight
           auth:
             - aws-cli/setup: {}
@@ -117,12 +109,11 @@ jobs:
 
   deploy_ap_northeast_1_live:
     executor: python_default
-    environment:
-      AWS_REGION: ap-northeast-1
-      AWS_ECR_REGISTRY_ID: "258965805804"
     steps:
       - checkout
       - aws-ecr/build_and_push_image:
+          account_id: "258965805804"
+          region: ap-northeast-1
           repo: gs2-insight
           auth:
             - aws-cli/setup: {}
@@ -130,12 +121,11 @@ jobs:
 
   deploy_us_east_1_live:
     executor: python_default
-    environment:
-      AWS_REGION: us-east-1
-      AWS_ECR_REGISTRY_ID: "258965805804"
     steps:
       - checkout
       - aws-ecr/build_and_push_image:
+          account_id: "258965805804"
+          region: us-east-1
           repo: gs2-insight
           auth:
             - aws-cli/setup: {}
@@ -143,12 +133,11 @@ jobs:
 
   deploy_eu_west_1_live:
     executor: python_default
-    environment:
-      AWS_REGION: eu-west-1
-      AWS_ECR_REGISTRY_ID: "258965805804"
     steps:
       - checkout
       - aws-ecr/build_and_push_image:
+          account_id: "258965805804"
+          region: eu-west-1
           repo: gs2-insight
           auth:
             - aws-cli/setup: {}
@@ -156,12 +145,11 @@ jobs:
 
   deploy_ap_southeast_1_live:
     executor: python_default
-    environment:
-      AWS_REGION: ap-southeast-1
-      AWS_ECR_REGISTRY_ID: "258965805804"
     steps:
       - checkout
       - aws-ecr/build_and_push_image:
+          account_id: "258965805804"
+          region: ap-southeast-1
           repo: gs2-insight
           auth:
             - aws-cli/setup: {}
@@ -169,12 +157,11 @@ jobs:
 
   deploy_ap_northeast_2_live:
     executor: python_default
-    environment:
-      AWS_REGION: ap-northeast-2
-      AWS_ECR_REGISTRY_ID: "258965805804"
     steps:
       - checkout
       - aws-ecr/build_and_push_image:
+          account_id: "258965805804"
+          region: ap-northeast-2
           repo: gs2-insight
           auth:
             - aws-cli/setup: {}
@@ -182,12 +169,11 @@ jobs:
 
   deploy_ap_south_1_live:
     executor: python_default
-    environment:
-      AWS_REGION: ap-south-1
-      AWS_ECR_REGISTRY_ID: "258965805804"
     steps:
       - checkout
       - aws-ecr/build_and_push_image:
+          account_id: "258965805804"
+          region: ap-south-1
           repo: gs2-insight
           auth:
             - aws-cli/setup: {}
@@ -195,12 +181,11 @@ jobs:
 
   deploy_us_west_2_live:
     executor: python_default
-    environment:
-      AWS_REGION: us-west-2
-      AWS_ECR_REGISTRY_ID: "258965805804"
     steps:
       - checkout
       - aws-ecr/build_and_push_image:
+          account_id: "258965805804"
+          region: us-west-2
           repo: gs2-insight
           auth:
             - aws-cli/setup: {}
@@ -208,12 +193,11 @@ jobs:
 
   deploy_eu_central_1_live:
     executor: python_default
-    environment:
-      AWS_REGION: eu-central-1
-      AWS_ECR_REGISTRY_ID: "258965805804"
     steps:
       - checkout
       - aws-ecr/build_and_push_image:
+          account_id: "258965805804"
+          region: eu-central-1
           repo: gs2-insight
           auth:
             - aws-cli/setup: {}
