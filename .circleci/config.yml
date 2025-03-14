@@ -20,6 +20,8 @@ jobs:
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
+          auth:
+            - aws-cli/setup: {}
           tag: latest
 
   deploy_us_east_1_dev:
@@ -32,6 +34,8 @@ jobs:
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
+          auth:
+            - aws-cli/setup: {}
           tag: latest
 
   deploy_eu_west_1_dev:
@@ -44,6 +48,8 @@ jobs:
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
+          auth:
+            - aws-cli/setup: {}
           tag: latest
 
   deploy_ap_southeast_1_dev:
@@ -56,6 +62,8 @@ jobs:
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
+          auth:
+            - aws-cli/setup: {}
           tag: latest
 
   deploy_ap_northeast_2_dev:
@@ -68,6 +76,8 @@ jobs:
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
+          auth:
+            - aws-cli/setup: {}
           tag: latest
 
   deploy_ap_south_1_dev:
@@ -80,6 +90,8 @@ jobs:
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
+          auth:
+            - aws-cli/setup: {}
           tag: latest
 
   deploy_us_west_2_dev:
@@ -92,6 +104,8 @@ jobs:
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
+          auth:
+            - aws-cli/setup: {}
           tag: latest
 
   deploy_eu_central_1_dev:
@@ -104,6 +118,8 @@ jobs:
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
+          auth:
+            - aws-cli/setup: {}
           tag: latest
 
   deploy_ap_northeast_1_live:
@@ -116,6 +132,8 @@ jobs:
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
+          auth:
+            - aws-cli/setup: {}
           tag: latest
 
   deploy_us_east_1_live:
@@ -128,6 +146,8 @@ jobs:
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
+          auth:
+            - aws-cli/setup: {}
           tag: latest
 
   deploy_eu_west_1_live:
@@ -140,6 +160,8 @@ jobs:
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
+          auth:
+            - aws-cli/setup: {}
           tag: latest
 
   deploy_ap_southeast_1_live:
@@ -152,6 +174,8 @@ jobs:
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
+          auth:
+            - aws-cli/setup: {}
           tag: latest
 
   deploy_ap_northeast_2_live:
@@ -164,6 +188,8 @@ jobs:
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
+          auth:
+            - aws-cli/setup: {}
           tag: latest
 
   deploy_ap_south_1_live:
@@ -176,6 +202,8 @@ jobs:
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
+          auth:
+            - aws-cli/setup: {}
           tag: latest
 
   deploy_us_west_2_live:
@@ -188,6 +216,8 @@ jobs:
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
+          auth:
+            - aws-cli/setup: {}
           tag: latest
 
   deploy_eu_central_1_live:
@@ -200,6 +230,8 @@ jobs:
       - aws-ecr/build_and_push_image:
           repo: gs2-insight
           setup-remote-docker: true
+          auth:
+            - aws-cli/setup: {}
           tag: latest
 
 workflows:
