@@ -28,6 +28,7 @@ RUN cd /etc/apache2/mods-enabled \
     && ln -s ../mods-available/rewrite.load
 
 COPY ./docker/run.sh /tmp
+COPY ./docker/wait-for-it.sh /tmp
 COPY . /var/www/html
 
 ENTRYPOINT ["/tmp/run.sh"]
